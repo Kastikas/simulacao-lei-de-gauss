@@ -15,7 +15,15 @@
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']]
             },
-            svg: { fontCache: 'global' }
+            svg: { fontCache: 'global' },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        // Força a renderização inicial caso já tenhamos inserido o conteúdo
+                        if (typeof updateUI === 'function') updateUI();
+                    });
+                }
+            }
         };
     </script>
     <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -281,8 +289,6 @@
         const symmetryTestGroup = new THREE.Group(); scene.add(symmetryTestGroup);
 
         // --- MATERIAIS COMUNS ---
-        
-        // Modificado para ser parcialmente transparente para visualização interna
         const chargeMaterial = new THREE.MeshPhysicalMaterial({ 
             color: 0xef4444, 
             roughness: 0.3, 
@@ -292,7 +298,7 @@
             emissiveIntensity: 0.2,
             transparent: true,
             opacity: 0.45,
-            depthWrite: false // Permite ver renderizações que estão "dentro" do sólido
+            depthWrite: false 
         });
         
         const gaussianMaterial = new THREE.MeshPhysicalMaterial({ 
@@ -372,10 +378,8 @@
             return true;
         }
 
-        // Verifica se o ponto está dentro (ou na superfície) da distribuição de carga
         function isInsideDistribution(shape, p) {
-            const tol = 0.2; // Tolerância extra para facilitar escolha na UI
-            
+            const tol = 0.2; 
             if (shape === 'sphere') {
                 return p.length() <= 1.5 + tol;
             } else if (shape === 'cylinder') {
@@ -458,7 +462,6 @@
         }
 
         function buildCubeScene() {
-            // Carga cúbica sólida com transparência
             mainGroup.add(new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), chargeMaterial));
             
             if (showGaussian) {
@@ -512,7 +515,6 @@
 
             if (p1.length() < 0.01) return; 
 
-            // 1. Verificação se o ponto pertence à distribuição de carga
             const isInside = isInsideDistribution(currentShape, p1);
 
             if (!isInside) {
@@ -529,7 +531,6 @@
                 outOfBoundsMsg.classList.add('hidden');
             }
 
-            // 2. Verificação se a simetria solicitada é válida
             const isSymValidForShape = checkSymmetryValid(currentShape, symInfo.type, angleDeg);
             if(isSymValidForShape) {
                 invalidMsg.classList.add('hidden');
@@ -537,7 +538,6 @@
                 invalidMsg.classList.remove('hidden');
             }
 
-            // 3. Transformação Matemática
             if (symInfo.type === 'refl') {
                 if (symmetryMode === 'refl_x') p2.set(-p1.x, p1.y, p1.z);
                 else if (symmetryMode === 'refl_y') p2.set(p1.x, -p1.y, p1.z);
@@ -556,7 +556,6 @@
 
             const isCoincident = p1.distanceTo(p2) < 0.001;
 
-            // 4. Lógica Visual Padrão
             if (!isSymValidForShape) {
                 const matRed = new THREE.MeshBasicMaterial({ color: 0xef4444 });
                 const matGray = new THREE.MeshBasicMaterial({ color: 0x6b7280 });
@@ -689,7 +688,7 @@
             document.getElementById('info-desc').innerHTML = data.desc;
             document.getElementById('info-math').innerHTML = data.math;
             
-            if (window.MathJax) {
+            if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
                 MathJax.typesetPromise([document.getElementById('info-math'), document.getElementById('info-desc'), document.getElementById('shape-dimensions')]).catch((err) => console.log(err.message));
             }
         }
@@ -737,7 +736,8 @@
         updateReferencesVisibility();
         updateSymmetryDropdown(currentShape);
         updateScene();
-        updateUI();
+        // Chamamos a primeira atualização visual após o MathJax estar pronto. Se não estiver, ele renderizará pelo trigger do startup do MathJax.
+        updateUI(); 
         animate();
 
     </script>
