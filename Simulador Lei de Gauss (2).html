@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Simetria - Lei de Gauss</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax para equações -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Three.js e OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0f172a; font-family: 'Inter', sans-serif; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
+        #ui-panel {
+            position: absolute; top: 0; left: 0; width: 420px; max-width: 100vw; height: 100vh;
+            z-index: 10; background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Estilo dos Toggles */
+        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+        .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
+        .toggle-label { width: 2.5rem; height: 1.25rem; background-color: #64748b; border-radius: 9999px; transition: all 0.3s; }
+        .toggle-dot { top: 0.125rem; left: 0.125rem; width: 1rem; height: 1rem; background-color: white; border-radius: 50%; transition: all 0.3s; }
+        .toggle-checkbox:checked + .toggle-label .toggle-dot { transform: translateX(1.25rem); }
+        
+        @media (max-width: 768px) {
+            #ui-panel { width: 100%; height: 55vh; bottom: 0; top: auto; border-right: none; border-top: 1px solid rgba(255,255,255,0.1); }
+            #canvas-container { height: 45vh; }
+        }
+    </style>
+</head>
+<body class="text-slate-200">
+
+    <div id="canvas-container"></div>
+
+    <div id="ui-panel" class="p-5 flex flex-col gap-4 shadow-2xl">
+        <div>
+            <h1 class="text-xl font-bold text-white mb-1">Simetria & Lei de Gauss</h1>
+            <p class="text-xs text-slate-400">Explore visualmente as simplificações de fluxo elétrico.</p>
+        </div>
+
+        <div class="flex flex-col gap-3 bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+            <!-- Objeto e Dimensões -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Distribuição de Carga</label>
+                <select id="shape-select" class="w-full bg-slate-900 border border-slate-600 text-white text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2 outline-none">
+                    <option value="sphere">Esfera (Carga Esférica)</option>
+                    <option value="cylinder">Cilindro (Fio Longo/Cilíndrico)</option>
+                    <option value="plane">Plano (Placa Infinita)</option>
+                    <option value="cube">Cubo (Distribuição Cúbica)</option>
+                </select>
+                
+                <!-- Guia de Dimensões para ajudar na escolha dos pontos -->
+                <div id="shape-dimensions" class="mt-2 text-[10px] text-blue-200 bg-blue-900/40 p-2 rounded border border-blue-700/50 leading-tight">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </div>
+
+            <hr class="border-slate-700 my-1">
+
+            <!-- Elementos da Lei de Gauss -->
+            <div class="space-y-3">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Visualização da Lei de Gauss</label>
+                
+                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-gaussian').click()">
+                    <span class="text-sm font-medium text-blue-200">Superfície Gaussiana</span>
+                    <div class="relative inline-block w-10 align-middle select-none">
+                        <input type="checkbox" id="toggle-gaussian" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0" checked/>
+                        <label for="toggle-gaussian" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-field').click()">
+                    <span class="text-sm font-medium text-red-200">Campo Elétrico ($\vec{E}$)</span>
+                    <div class="relative inline-block w-10 align-middle select-none">
+                        <input type="checkbox" id="toggle-field" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0" checked/>
+                        <label for="toggle-field" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-slate-700 my-1">
+
+            <!-- Referências Espaciais -->
+            <div class="space-y-3">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider flex justify-between items-center">
+                    Referências Espaciais
+                    <div class="flex items-center gap-2 cursor-pointer" onclick="document.getElementById('toggle-axes').click()">
+                        <span class="text-[10px] normal-case text-slate-300">Eixos XYZ</span>
+                        <input type="checkbox" id="toggle-axes" class="hidden" checked/>
+                        <div class="w-3 h-3 rounded-full border border-slate-400 bg-blue-500" id="axes-indicator"></div>
+                    </div>
+                </label>
+                
+                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-plane-x').click()">
+                    <span class="text-sm text-slate-300"><span class="text-red-400 font-bold mr-1">|</span> Plano $x = 0$ (YZ)</span>
+                    <div class="relative inline-block w-10 align-middle select-none">
+                        <input type="checkbox" id="toggle-plane-x" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0"/>
+                        <label for="toggle-plane-x" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-plane-y').click()">
+                    <span class="text-sm text-slate-300"><span class="text-green-400 font-bold mr-1">|</span> Plano $y = 0$ (XZ)</span>
+                    <div class="relative inline-block w-10 align-middle select-none">
+                        <input type="checkbox" id="toggle-plane-y" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0"/>
+                        <label for="toggle-plane-y" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-plane-z').click()">
+                    <span class="text-sm text-slate-300"><span class="text-blue-400 font-bold mr-1">|</span> Plano $z = 0$ (XY)</span>
+                    <div class="relative inline-block w-10 align-middle select-none">
+                        <input type="checkbox" id="toggle-plane-z" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0"/>
+                        <label for="toggle-plane-z" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODO DE VERIFICAÇÃO DE SIMETRIA DINÂMICO -->
+            <div class="mt-2 bg-slate-700/50 p-3 rounded-lg border border-fuchsia-800/50">
+                <label class="block text-xs font-semibold text-fuchsia-300 mb-2 uppercase tracking-wider">Simetrias Válidas (Verificação)</label>
+                
+                <select id="symmetry-mode" class="w-full bg-slate-800 border border-fuchsia-700/50 text-white text-sm rounded-md focus:ring-fuchsia-500 focus:border-fuchsia-500 block p-2 outline-none mb-2">
+                    <!-- Opções injetadas dinamicamente via JS -->
+                </select>
+                
+                <div id="sym-controls" class="hidden">
+                    <!-- Input de Ângulo (Aparece apenas em rotações) -->
+                    <div id="angle-container" class="hidden mb-3">
+                        <label class="block text-[10px] text-slate-400 mb-1">Ângulo de Rotação (graus)</label>
+                        <input type="number" id="rot-angle" value="45" step="15" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs text-white outline-none focus:border-fuchsia-500 transition-colors">
+                    </div>
+
+                    <label class="block text-[10px] text-slate-400 mb-1">Posição do Vetor de Teste $(x, y, z)$</label>
+                    <div class="flex gap-2 mb-3">
+                        <div class="flex-1 flex items-center bg-slate-900 border border-slate-600 rounded px-2">
+                            <span class="text-[10px] text-red-400 font-bold mr-1">X:</span>
+                            <input type="number" id="vec-x" value="1.5" step="0.5" class="w-full bg-transparent border-none py-1 text-xs text-white outline-none">
+                        </div>
+                        <div class="flex-1 flex items-center bg-slate-900 border border-slate-600 rounded px-2">
+                            <span class="text-[10px] text-green-400 font-bold mr-1">Y:</span>
+                            <input type="number" id="vec-y" value="0.0" step="0.5" class="w-full bg-transparent border-none py-1 text-xs text-white outline-none">
+                        </div>
+                        <div class="flex-1 flex items-center bg-slate-900 border border-slate-600 rounded px-2">
+                            <span class="text-[10px] text-blue-400 font-bold mr-1">Z:</span>
+                            <input type="number" id="vec-z" value="0.0" step="0.5" class="w-full bg-transparent border-none py-1 text-xs text-white outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Mensagem de erro: FORA DA DISTRIBUIÇÃO (Laranja) -->
+                    <div id="sym-outofbounds-msg" class="hidden mb-3 p-2 bg-amber-900/40 border border-amber-500/50 rounded-md">
+                        <p class="text-xs text-amber-300 font-semibold mb-1">⚠ Fora da Distribuição</p>
+                        <p class="text-[10px] text-amber-200/80 leading-tight">O vetor escolhido não faz parte da distribuição de carga. Escolha um ponto $(x,y,z)$ contido no objeto.</p>
+                    </div>
+
+                    <!-- Mensagem de erro: SIMETRIA INVÁLIDA (Vermelho) -->
+                    <div id="sym-invalid-msg" class="hidden mb-3 p-2 bg-red-900/40 border border-red-500/50 rounded-md">
+                        <p class="text-xs text-red-300 font-semibold mb-1">⚠ Simetria Inválida</p>
+                        <p class="text-[10px] text-red-200/80 leading-tight">O objeto não possui simetria para este ângulo. Não há garantias de que o campo elétrico seja simétrico nesta posição.</p>
+                    </div>
+
+                    <!-- Legenda -->
+                    <div class="text-[10px] text-slate-300 bg-slate-900/50 p-2 rounded">
+                        <div class="flex items-center mb-1"><span class="w-2.5 h-2.5 rounded-full bg-fuchsia-500 mr-2 shadow-[0_0_3px_#d946ef]"></span> Vetor Original ($\vec{r}$)</div>
+                        <div class="flex items-center mb-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 mr-2 shadow-[0_0_3px_#22d3ee]"></span> Vetor Simétrico ($\vec{r}'$)</div>
+                        <div class="flex items-center mb-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 mr-2 shadow-[0_0_3px_#a855f7]"></span> Coincidente (Invariante)</div>
+                        <div class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-red-500 mr-1 shadow-[0_0_3px_#ef4444]"></span> / <span class="w-2.5 h-2.5 rounded-full bg-gray-500 ml-1 mr-2"></span> Sem Simetria</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div id="info-box" class="bg-blue-900/20 border border-blue-800/50 p-4 rounded-xl mb-4">
+            <h2 id="info-title" class="text-base font-bold text-blue-400 mb-2">Carregando...</h2>
+            <div id="info-math" class="text-sm bg-slate-900 p-2 rounded-lg flex justify-center text-white overflow-x-auto mb-2"></div>
+            <p id="info-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+        </div>
+        
+    </div>
+
+    <script>
+        // --- DICIONÁRIO DE CONTEÚDO E SIMETRIAS ---
+        const contentData = {
+            sphere: {
+                title: "Simetria Esférica",
+                dimensions: "<b>Carga:</b> Raio = $1.5$ <br> <b>Gaussiana:</b> Raio = $3.5$",
+                desc: "Uma esfera centrada na origem possui todas as simetrias possíveis. Por isso, $E$ depende apenas de $|\\vec{r}|$ (distância à origem) e sua direção é puramente radial. Sendo paralelo ao vetor área $d\\mathbf{A}$, $E$ sai da integral.",
+                math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = E(4\\pi r^2) = \\frac{q_{int}}{\\epsilon_0} $$"
+            },
+            cylinder: {
+                title: "Simetria Cilíndrica",
+                dimensions: "<b>Carga:</b> Raio = $1.0$ (ao longo do eixo Y)<br> <b>Gaussiana:</b> Raio = $3.0$ | Altura = $6.0$",
+                desc: "Um fio infinito sobre o eixo Y possui simetria de rotação contínua em torno de Y e reflexão em Y. O campo é radial ao eixo Y. O fluxo pelas bases planas da Gaussiana é nulo, sobrando a lateral.",
+                math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = E(2\\pi r L) = \\frac{\\lambda L}{\\epsilon_0} $$"
+            },
+            plane: {
+                title: "Simetria Plana",
+                dimensions: "<b>Placa:</b> Em $y=0$ com espessura $= 0.1$ <br> <b>Gaussiana (Cilindro):</b> Tampas em $y=\\pm 2.0$",
+                desc: "Uma placa infinita no plano XZ ($y=0$) possui rotação contínua em torno de Y e reflexões em X e Z. O campo aponta puramente na direção normal (Y). Gaussiana: Cilindro (Pillbox).",
+                math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = E(2A) = \\frac{\\sigma A}{\\epsilon_0} $$"
+            },
+            cube: {
+                title: "Assimetria (Distribuição Cúbica)",
+                dimensions: "<b>Carga:</b> Cubo de Lado = $3.0$ (vai de $-1.5$ a $1.5$) <br> <b>Gaussiana:</b> Cubo de Lado = $4.0$",
+                desc: "Um cubo possui rotações discretas (apenas múltiplos de 90°), mas <b>não possui rotações contínuas</b>. Tentar usar Gauss para simetrias diferentes resultará em erros, pois o campo varia na superfície.",
+                math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = \\iint \\vec{E}(x,y,z) \\cdot \\hat{n} dA $$"
+            }
+        };
+
+        // Definição das transformações possíveis
+        const symmetryDict = {
+            'refl_x': { text: 'Reflexão pelo plano x = 0 (YZ)', type: 'refl' },
+            'refl_y': { text: 'Reflexão pelo plano y = 0 (XZ)', type: 'refl' },
+            'refl_z': { text: 'Reflexão pelo plano z = 0 (XY)', type: 'refl' },
+            'inv': { text: 'Inversão Espacial (Pela Origem)', type: 'inv' },
+            'rot_x': { text: 'Rotação em torno do Eixo X', type: 'rot', axis: 'x' },
+            'rot_y': { text: 'Rotação em torno do Eixo Y', type: 'rot', axis: 'y' },
+            'rot_z': { text: 'Rotação em torno do Eixo Z', type: 'rot', axis: 'z' }
+        };
+
+        const shapeSymmetries = {
+            sphere: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_x', 'rot_y', 'rot_z'],
+            cylinder: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_y'],
+            plane: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_y'],
+            cube: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_x', 'rot_y', 'rot_z']
+        };
+
+        // --- SETUP THREE.JS ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0f172a);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(10, 8, 12);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8); dirLight.position.set(10, 20, 10); scene.add(dirLight);
+        const dirLight2 = new THREE.DirectionalLight(0x93c5fd, 0.4); dirLight2.position.set(-10, -10, -10); scene.add(dirLight2);
+
+        // --- GRUPOS GLOBAIS ---
+        const mainGroup = new THREE.Group(); scene.add(mainGroup);
+        const referenceGroup = new THREE.Group(); scene.add(referenceGroup);
+        const symmetryTestGroup = new THREE.Group(); scene.add(symmetryTestGroup);
+
+        // --- MATERIAIS COMUNS ---
+        
+        // Modificado para ser parcialmente transparente para visualização interna
+        const chargeMaterial = new THREE.MeshPhysicalMaterial({ 
+            color: 0xef4444, 
+            roughness: 0.3, 
+            metalness: 0.2, 
+            clearcoat: 0.5, 
+            emissive: 0xef4444, 
+            emissiveIntensity: 0.2,
+            transparent: true,
+            opacity: 0.45,
+            depthWrite: false // Permite ver renderizações que estão "dentro" do sólido
+        });
+        
+        const gaussianMaterial = new THREE.MeshPhysicalMaterial({ 
+            color: 0x60a5fa, 
+            transparent: true, 
+            opacity: 0.2, 
+            roughness: 0.1, 
+            metalness: 0.1, 
+            side: THREE.DoubleSide, 
+            depthWrite: false 
+        });
+
+        // --- EIXOS E PLANOS CARTESIANOS ---
+        const axesSize = 10;
+        const planeSize = 12;
+        
+        const axesHelper = new THREE.AxesHelper(axesSize); referenceGroup.add(axesHelper);
+
+        const matPlaneX = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false });
+        const matPlaneY = new THREE.MeshBasicMaterial({ color: 0x44ff44, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false });
+        const matPlaneZ = new THREE.MeshBasicMaterial({ color: 0x4444ff, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false });
+
+        const cartesianPlaneGeo = new THREE.PlaneGeometry(planeSize, planeSize);
+
+        const planeX0 = new THREE.Mesh(cartesianPlaneGeo, matPlaneX); planeX0.rotation.y = Math.PI / 2;
+        const gridX = new THREE.GridHelper(planeSize, 12, 0xff4444, 0xff4444); gridX.rotation.z = Math.PI / 2; gridX.material.opacity = 0.3; gridX.material.transparent = true;
+        const groupPlaneX = new THREE.Group(); groupPlaneX.add(planeX0); groupPlaneX.add(gridX); referenceGroup.add(groupPlaneX);
+
+        const planeY0 = new THREE.Mesh(cartesianPlaneGeo, matPlaneY); planeY0.rotation.x = Math.PI / 2;
+        const gridY = new THREE.GridHelper(planeSize, 12, 0x44ff44, 0x44ff44); gridY.material.opacity = 0.3; gridY.material.transparent = true;
+        const groupPlaneY = new THREE.Group(); groupPlaneY.add(planeY0); groupPlaneY.add(gridY); referenceGroup.add(groupPlaneY);
+
+        const planeZ0 = new THREE.Mesh(cartesianPlaneGeo, matPlaneZ);
+        const gridZ = new THREE.GridHelper(planeSize, 12, 0x4444ff, 0x4444ff); gridZ.rotation.x = Math.PI / 2; gridZ.material.opacity = 0.3; gridZ.material.transparent = true;
+        const groupPlaneZ = new THREE.Group(); groupPlaneZ.add(planeZ0); groupPlaneZ.add(gridZ); referenceGroup.add(groupPlaneZ);
+
+        // Estado inicial
+        let currentShape = 'sphere';
+        let showGaussian = true;
+        let showField = true;
+        let showAxes = true;
+        let showPlaneX = false;
+        let showPlaneY = false;
+        let showPlaneZ = false;
+        let symmetryMode = 'none';
+
+        function updateReferencesVisibility() {
+            axesHelper.visible = showAxes;
+            document.getElementById('axes-indicator').className = showAxes ? "w-3 h-3 rounded-full border border-slate-400 bg-blue-500" : "w-3 h-3 rounded-full border border-slate-500 bg-transparent";
+            groupPlaneX.visible = showPlaneX;
+            groupPlaneY.visible = showPlaneY;
+            groupPlaneZ.visible = showPlaneZ;
+        }
+
+        function clearGroup(group) {
+            while(group.children.length > 0){ 
+                const child = group.children[0];
+                if(child.geometry) child.geometry.dispose();
+                if(child.material) {
+                    if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+                    else child.material.dispose();
+                }
+                group.remove(child); 
+            }
+        }
+        function createArrow(dir, origin, length, color, headLength=0.2, headWidth=0.1) {
+            return new THREE.ArrowHelper(dir, origin, length, color, headLength, headWidth);
+        }
+
+        // --- VALIDAÇÕES GEOMÉTRICAS ---
+        function checkSymmetryValid(shape, symType, angleDeg) {
+            if (symType !== 'rot') return true; 
+            if (shape === 'cube') {
+                const rem = Math.abs(angleDeg % 90);
+                return (rem < 0.001 || Math.abs(rem - 90) < 0.001);
+            }
+            return true;
+        }
+
+        // Verifica se o ponto está dentro (ou na superfície) da distribuição de carga
+        function isInsideDistribution(shape, p) {
+            const tol = 0.2; // Tolerância extra para facilitar escolha na UI
+            
+            if (shape === 'sphere') {
+                return p.length() <= 1.5 + tol;
+            } else if (shape === 'cylinder') {
+                return Math.sqrt(p.x*p.x + p.z*p.z) <= 1.0 + tol && p.y >= -6.0 - tol && p.y <= 6.0 + tol;
+            } else if (shape === 'plane') {
+                return Math.abs(p.x) <= 5.0 + tol && Math.abs(p.z) <= 5.0 + tol && Math.abs(p.y) <= 0.05 + tol;
+            } else if (shape === 'cube') {
+                return Math.abs(p.x) <= 1.5 + tol && Math.abs(p.y) <= 1.5 + tol && Math.abs(p.z) <= 1.5 + tol;
+            }
+            return true;
+        }
+
+        // --- CONSTRUTORES DE FORMAS ---
+        function buildSphereScene() {
+            const radCharge = 1.5;
+            const radGauss = 3.5;
+            
+            mainGroup.add(new THREE.Mesh(new THREE.SphereGeometry(radCharge, 32, 32), chargeMaterial));
+            if (showGaussian) mainGroup.add(new THREE.Mesh(new THREE.SphereGeometry(radGauss, 32, 32), gaussianMaterial));
+            
+            if (showField) {
+                const goldenRatio = (1 + Math.sqrt(5)) / 2;
+                const arrowLength = (showGaussian ? radGauss : radGauss - 1.0) - radCharge;
+                for (let i = 0; i < 40; i++) {
+                    const phi = Math.acos(1 - 2 * (i + 0.5) / 40);
+                    const theta = 2 * Math.PI * i / goldenRatio;
+                    const dir = new THREE.Vector3(Math.sin(phi) * Math.cos(theta), Math.sin(phi) * Math.sin(theta), Math.cos(phi));
+                    mainGroup.add(createArrow(dir, dir.clone().multiplyScalar(radCharge), arrowLength, 0xfca5a5));
+                }
+            }
+        }
+
+        function buildCylinderScene() {
+            const radCharge = 1.0;
+            const radGauss = 3.0;
+            const heightGauss = 6.0;
+            
+            mainGroup.add(new THREE.Mesh(new THREE.CylinderGeometry(radCharge, radCharge, 12, 32), chargeMaterial));
+            
+            if (showGaussian) {
+                const gaussGeo = new THREE.CylinderGeometry(radGauss, radGauss, heightGauss, 32);
+                mainGroup.add(new THREE.Mesh(gaussGeo, gaussianMaterial));
+                mainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(gaussGeo), new THREE.LineBasicMaterial({ color: 0x60a5fa, opacity: 0.5, transparent: true })));
+            }
+            
+            if (showField) {
+                const arrowLength = (showGaussian ? radGauss : radGauss - 1.0) - radCharge;
+                for (let y = -2.0; y <= 2.0; y += 1.0) {
+                    for (let i = 0; i < 12; i++) {
+                        const angle = (i / 12) * Math.PI * 2;
+                        const dir = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
+                        mainGroup.add(createArrow(dir, new THREE.Vector3(radCharge * Math.cos(angle), y, radCharge * Math.sin(angle)), arrowLength, 0xfca5a5));
+                    }
+                }
+            }
+        }
+
+        function buildPlaneScene() {
+            const planeSize = 10;
+            const gaussRad = 2.0;
+            const gaussHeight = 4.0;
+            
+            mainGroup.add(new THREE.Mesh(new THREE.BoxGeometry(planeSize, 0.1, planeSize), chargeMaterial));
+            
+            if (showGaussian) {
+                const gaussGeo = new THREE.CylinderGeometry(gaussRad, gaussRad, gaussHeight, 32);
+                mainGroup.add(new THREE.Mesh(gaussGeo, gaussianMaterial));
+                mainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(gaussGeo), new THREE.LineBasicMaterial({ color: 0x60a5fa, opacity: 0.5, transparent: true })));
+            }
+            
+            if (showField) {
+                const arrowLength = (showGaussian ? gaussHeight / 2 : 1.5) - 0.05;
+                for (let x = -3; x <= 3; x+=1.5) {
+                    for (let z = -3; z <= 3; z+=1.5) {
+                        mainGroup.add(createArrow(new THREE.Vector3(0, 1, 0), new THREE.Vector3(x, 0.05, z), arrowLength, 0xfca5a5));
+                        mainGroup.add(createArrow(new THREE.Vector3(0, -1, 0), new THREE.Vector3(x, -0.05, z), arrowLength, 0xfca5a5));
+                    }
+                }
+            }
+        }
+
+        function buildCubeScene() {
+            // Carga cúbica sólida com transparência
+            mainGroup.add(new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), chargeMaterial));
+            
+            if (showGaussian) {
+                const gaussGeo = new THREE.BoxGeometry(4, 4, 4);
+                mainGroup.add(new THREE.Mesh(gaussGeo, gaussianMaterial));
+                mainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(gaussGeo), new THREE.LineBasicMaterial({ color: 0x60a5fa, opacity: 0.8 })));
+            }
+            
+            if (showField) {
+                const pts = [
+                    new THREE.Vector3(2, 0, 0), new THREE.Vector3(-2, 0, 0), new THREE.Vector3(0, 2, 0), new THREE.Vector3(0, -2, 0), new THREE.Vector3(0, 0, 2), new THREE.Vector3(0, 0, -2),
+                    new THREE.Vector3(2, 2, 0), new THREE.Vector3(2, -2, 0), new THREE.Vector3(-2, 2, 0), new THREE.Vector3(-2, -2, 0),
+                    new THREE.Vector3(2, 2, 2), new THREE.Vector3(2, 2, -2), new THREE.Vector3(2, -2, 2), new THREE.Vector3(-2, -2, 2)
+                ];
+                pts.forEach(p => mainGroup.add(createArrow(p.clone().normalize(), p.clone().normalize().multiplyScalar(1.5), (showGaussian ? p.length() - 1.5 : 1), 0xfca5a5)));
+            }
+        }
+
+        // --- SISTEMA DE VERIFICAÇÃO DE SIMETRIA DINÂMICA ---
+        function buildSymmetryTest() {
+            clearGroup(symmetryTestGroup);
+            const controlsDiv = document.getElementById('sym-controls');
+            const angleContainer = document.getElementById('angle-container');
+            const invalidMsg = document.getElementById('sym-invalid-msg');
+            const outOfBoundsMsg = document.getElementById('sym-outofbounds-msg');
+            
+            if (symmetryMode === 'none') {
+                controlsDiv.classList.add('hidden');
+                return;
+            }
+            controlsDiv.classList.remove('hidden');
+
+            const vx = parseFloat(document.getElementById('vec-x').value) || 0;
+            const vy = parseFloat(document.getElementById('vec-y').value) || 0;
+            const vz = parseFloat(document.getElementById('vec-z').value) || 0;
+            const p1 = new THREE.Vector3(vx, vy, vz);
+            
+            const p2 = new THREE.Vector3();
+            const symInfo = symmetryDict[symmetryMode];
+            const origin = new THREE.Vector3(0, 0, 0);
+            
+            let angleDeg = 0;
+            let angleRad = 0;
+            if (symInfo.type === 'rot') {
+                angleContainer.classList.remove('hidden');
+                angleDeg = parseFloat(document.getElementById('rot-angle').value) || 0;
+                angleRad = angleDeg * Math.PI / 180;
+            } else {
+                angleContainer.classList.add('hidden');
+            }
+
+            if (p1.length() < 0.01) return; 
+
+            // 1. Verificação se o ponto pertence à distribuição de carga
+            const isInside = isInsideDistribution(currentShape, p1);
+
+            if (!isInside) {
+                outOfBoundsMsg.classList.remove('hidden');
+                invalidMsg.classList.add('hidden');
+
+                const matWarn = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+                const meshP1 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matWarn);
+                meshP1.position.copy(p1);
+                symmetryTestGroup.add(meshP1);
+                symmetryTestGroup.add(createArrow(p1.clone().normalize(), origin, p1.length(), 0xf59e0b, 0.4, 0.2));
+                return; 
+            } else {
+                outOfBoundsMsg.classList.add('hidden');
+            }
+
+            // 2. Verificação se a simetria solicitada é válida
+            const isSymValidForShape = checkSymmetryValid(currentShape, symInfo.type, angleDeg);
+            if(isSymValidForShape) {
+                invalidMsg.classList.add('hidden');
+            } else {
+                invalidMsg.classList.remove('hidden');
+            }
+
+            // 3. Transformação Matemática
+            if (symInfo.type === 'refl') {
+                if (symmetryMode === 'refl_x') p2.set(-p1.x, p1.y, p1.z);
+                else if (symmetryMode === 'refl_y') p2.set(p1.x, -p1.y, p1.z);
+                else if (symmetryMode === 'refl_z') p2.set(p1.x, p1.y, -p1.z);
+            } 
+            else if (symInfo.type === 'inv') {
+                p2.set(-p1.x, -p1.y, -p1.z);
+            } 
+            else if (symInfo.type === 'rot') {
+                const axisVec = new THREE.Vector3();
+                if (symInfo.axis === 'x') axisVec.set(1, 0, 0);
+                if (symInfo.axis === 'y') axisVec.set(0, 1, 0);
+                if (symInfo.axis === 'z') axisVec.set(0, 0, 1);
+                p2.copy(p1).applyAxisAngle(axisVec, angleRad);
+            }
+
+            const isCoincident = p1.distanceTo(p2) < 0.001;
+
+            // 4. Lógica Visual Padrão
+            if (!isSymValidForShape) {
+                const matRed = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+                const matGray = new THREE.MeshBasicMaterial({ color: 0x6b7280 });
+
+                const meshP1 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matRed); meshP1.position.copy(p1);
+                const meshP2 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matGray); meshP2.position.copy(p2);
+                symmetryTestGroup.add(meshP1); symmetryTestGroup.add(meshP2);
+
+                symmetryTestGroup.add(createArrow(p1.clone().normalize(), origin, p1.length(), 0xef4444, 0.4, 0.2));
+                symmetryTestGroup.add(createArrow(p2.clone().normalize(), origin, p2.length(), 0x6b7280, 0.4, 0.2));
+            }
+            else if (isCoincident) {
+                const matPurple = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
+                const meshP = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matPurple); 
+                meshP.position.copy(p1);
+                symmetryTestGroup.add(meshP);
+                symmetryTestGroup.add(createArrow(p1.clone().normalize(), origin, p1.length(), 0xa855f7, 0.4, 0.2));
+            } 
+            else {
+                const matP1 = new THREE.MeshBasicMaterial({ color: 0xd946ef });
+                const matP2 = new THREE.MeshBasicMaterial({ color: 0x22d3ee });
+
+                const meshP1 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matP1); meshP1.position.copy(p1);
+                const meshP2 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matP2); meshP2.position.copy(p2);
+                symmetryTestGroup.add(meshP1); symmetryTestGroup.add(meshP2);
+
+                symmetryTestGroup.add(createArrow(p1.clone().normalize(), origin, p1.length(), 0xd946ef, 0.4, 0.2));
+                symmetryTestGroup.add(createArrow(p2.clone().normalize(), origin, p2.length(), 0x22d3ee, 0.4, 0.2));
+            }
+
+            const guideColor = !isSymValidForShape ? 0x666666 : 0xffffff;
+            const subGuideColor = !isSymValidForShape ? 0x444444 : 0xaaaaaa;
+
+            if (!isCoincident) {
+                if (symInfo.type === 'refl' || symInfo.type === 'inv') {
+                    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([p1, p2]), new THREE.LineDashedMaterial({ color: guideColor, dashSize: 0.1, gapSize: 0.1 }));
+                    line.computeLineDistances();
+                    symmetryTestGroup.add(line);
+                    
+                    const midMarker = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), new THREE.MeshBasicMaterial({color: guideColor}));
+                    midMarker.position.copy(new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5));
+                    symmetryTestGroup.add(midMarker);
+                } 
+                else if (symInfo.type === 'rot') {
+                    const axisVec = new THREE.Vector3();
+                    if (symInfo.axis === 'x') axisVec.set(1, 0, 0);
+                    if (symInfo.axis === 'y') axisVec.set(0, 1, 0);
+                    if (symInfo.axis === 'z') axisVec.set(0, 0, 1);
+
+                    const arcPts = [];
+                    for(let i=0; i<=50; i++) {
+                        arcPts.push(p1.clone().applyAxisAngle(axisVec, angleRad * (i/50)));
+                    }
+                    const arc = new THREE.Line(new THREE.BufferGeometry().setFromPoints(arcPts), new THREE.LineDashedMaterial({ color: guideColor, dashSize: 0.1, gapSize: 0.1 }));
+                    arc.computeLineDistances();
+                    symmetryTestGroup.add(arc);
+
+                    const centerPt = new THREE.Vector3();
+                    if(symInfo.axis === 'x') centerPt.set(p1.x, 0, 0);
+                    if(symInfo.axis === 'y') centerPt.set(0, p1.y, 0);
+                    if(symInfo.axis === 'z') centerPt.set(0, 0, p1.z);
+
+                    const cLine = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([
+                        centerPt.clone().add(axisVec.clone().multiplyScalar(3)), 
+                        centerPt.clone().add(axisVec.clone().multiplyScalar(-3))
+                    ]), new THREE.LineDashedMaterial({ color: subGuideColor, dashSize: 0.1, gapSize: 0.1 }));
+                    cLine.computeLineDistances();
+                    symmetryTestGroup.add(cLine);
+                    
+                    const radLine = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([centerPt, p1, centerPt, p2]), new THREE.LineDashedMaterial({ color: subGuideColor, dashSize: 0.1, gapSize: 0.1 }));
+                    radLine.computeLineDistances();
+                    symmetryTestGroup.add(radLine);
+                }
+            }
+        }
+
+        function updateScene() {
+            clearGroup(mainGroup);
+            updateReferencesVisibility();
+            
+            switch(currentShape) {
+                case 'sphere': buildSphereScene(); break;
+                case 'cylinder': buildCylinderScene(); break;
+                case 'plane': buildPlaneScene(); break;
+                case 'cube': buildCubeScene(); break;
+            }
+            
+            buildSymmetryTest();
+        }
+
+        // --- ATUALIZAÇÃO DINÂMICA DA UI ---
+        function updateSymmetryDropdown(shape) {
+            const select = document.getElementById('symmetry-mode');
+            select.innerHTML = '<option value="none">Nenhuma (Desativado)</option>';
+            
+            shapeSymmetries[shape].forEach(symKey => {
+                const sym = symmetryDict[symKey];
+                const opt = document.createElement('option');
+                opt.value = symKey;
+                opt.textContent = sym.text;
+                select.appendChild(opt);
+            });
+            
+            symmetryMode = 'none'; 
+            select.value = 'none';
+
+            if(shape === 'sphere') {
+                document.getElementById('vec-x').value = '1.5';
+                document.getElementById('vec-y').value = '0.0';
+                document.getElementById('vec-z').value = '0.0';
+            } else if (shape === 'cylinder') {
+                document.getElementById('vec-x').value = '1.0';
+                document.getElementById('vec-y').value = '2.0';
+                document.getElementById('vec-z').value = '0.0';
+            } else if (shape === 'plane') {
+                document.getElementById('vec-x').value = '2.0';
+                document.getElementById('vec-y').value = '0.0'; 
+                document.getElementById('vec-z').value = '2.0';
+            } else if (shape === 'cube') {
+                document.getElementById('vec-x').value = '1.5';
+                document.getElementById('vec-y').value = '1.5';
+                document.getElementById('vec-z').value = '1.5';
+            }
+        }
+
+        function updateUI() {
+            const data = contentData[currentShape];
+            document.getElementById('info-title').innerHTML = data.title;
+            document.getElementById('shape-dimensions').innerHTML = data.dimensions;
+            document.getElementById('info-desc').innerHTML = data.desc;
+            document.getElementById('info-math').innerHTML = data.math;
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([document.getElementById('info-math'), document.getElementById('info-desc'), document.getElementById('shape-dimensions')]).catch((err) => console.log(err.message));
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        document.getElementById('shape-select').addEventListener('change', (e) => { 
+            currentShape = e.target.value; 
+            updateSymmetryDropdown(currentShape);
+            updateScene(); 
+            updateUI(); 
+        });
+        
+        document.getElementById('toggle-axes').addEventListener('change', (e) => { showAxes = e.target.checked; updateReferencesVisibility(); });
+        document.getElementById('toggle-plane-x').addEventListener('change', (e) => { showPlaneX = e.target.checked; updateReferencesVisibility(); });
+        document.getElementById('toggle-plane-y').addEventListener('change', (e) => { showPlaneY = e.target.checked; updateReferencesVisibility(); });
+        document.getElementById('toggle-plane-z').addEventListener('change', (e) => { showPlaneZ = e.target.checked; updateReferencesVisibility(); });
+        
+        document.getElementById('toggle-gaussian').addEventListener('change', (e) => { showGaussian = e.target.checked; updateScene(); });
+        document.getElementById('toggle-field').addEventListener('change', (e) => { showField = e.target.checked; updateScene(); });
+        
+        document.getElementById('symmetry-mode').addEventListener('change', (e) => { symmetryMode = e.target.value; updateScene(); });
+
+        document.getElementById('vec-x').addEventListener('input', updateScene);
+        document.getElementById('vec-y').addEventListener('input', updateScene);
+        document.getElementById('vec-z').addEventListener('input', updateScene);
+        document.getElementById('rot-angle').addEventListener('input', updateScene);
+
+        window.addEventListener('resize', () => {
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            if(window.innerWidth <= 768) { height = window.innerHeight * 0.55; }
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
+        window.dispatchEvent(new Event('resize'));
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Inicialização
+        updateReferencesVisibility();
+        updateSymmetryDropdown(currentShape);
+        updateScene();
+        updateUI();
+        animate();
+
+    </script>
+</body>
+</html>
