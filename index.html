@@ -50,13 +50,19 @@
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-        /* Estilo dos Toggles */
-        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
-        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
-        .toggle-checkbox { right: 0; z-index: 1; border-color: #e2e8f0; transition: all 0.3s; }
-        .toggle-label { width: 2.5rem; height: 1.25rem; background-color: #64748b; border-radius: 9999px; transition: all 0.3s; }
-        .toggle-dot { top: 0.125rem; left: 0.125rem; width: 1rem; height: 1rem; background-color: white; border-radius: 50%; transition: all 0.3s; }
-        .toggle-checkbox:checked + .toggle-label .toggle-dot { transform: translateX(1.25rem); }
+        /* Estilo dos Botões de Alternância (Toggle Buttons) - Clicáveis */
+        .toggle-btn {
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .toggle-btn:hover {
+            filter: brightness(1.08);
+        }
+        .toggle-btn:active {
+            transform: scale(0.985);
+        }
         
         @media (max-width: 768px) {
             #ui-panel { width: 100%; height: 55vh; bottom: 0; top: auto; border-right: none; border-top: 1px solid rgba(255,255,255,0.1); }
@@ -94,62 +100,99 @@
             <hr class="border-slate-700 my-1">
 
             <!-- Elementos da Lei de Gauss -->
-            <div class="space-y-3">
-                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Visualização da Lei de Gauss</label>
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Visualização da Lei de Gauss</label>
                 
-                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-gaussian').click()">
-                    <span class="text-sm font-medium text-blue-200">Superfície Gaussiana</span>
-                    <div class="relative inline-block w-10 align-middle select-none">
-                        <input type="checkbox" id="toggle-gaussian" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0" checked/>
-                        <label for="toggle-gaussian" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                <!-- Toggle Superfície Gaussiana -->
+                <button type="button" id="toggle-gaussian" role="switch" aria-checked="true" class="toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border border-blue-500/50 bg-blue-950/30 hover:bg-slate-700/60 text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_6px_rgba(96,165,250,0.6)]"></span>
+                        <span class="text-sm font-medium text-blue-200">Superfície Gaussiana</span>
                     </div>
-                </div>
+                    <div class="flex items-center gap-2 pointer-events-none">
+                        <span class="toggle-status text-[10px] font-bold uppercase tracking-wider text-blue-400">ATIVO</span>
+                        <div class="toggle-switch w-8 h-4 rounded-full bg-blue-600 relative transition-colors">
+                            <div class="toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 right-0.5 transition-all shadow-sm"></div>
+                        </div>
+                    </div>
+                </button>
 
-                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-field').click()">
-                    <span class="text-sm font-medium text-red-200">Campo Elétrico ($\vec{E}$)</span>
-                    <div class="relative inline-block w-10 align-middle select-none">
-                        <input type="checkbox" id="toggle-field" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0" checked/>
-                        <label for="toggle-field" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                <!-- Toggle Campo Elétrico -->
+                <button type="button" id="toggle-field" role="switch" aria-checked="true" class="toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border border-red-500/50 bg-red-950/30 hover:bg-slate-700/60 text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-400 shadow-[0_0_6px_rgba(248,113,113,0.6)]"></span>
+                        <span class="text-sm font-medium text-red-200">Campo Elétrico ($\vec{E}$)</span>
                     </div>
-                </div>
+                    <div class="flex items-center gap-2 pointer-events-none">
+                        <span class="toggle-status text-[10px] font-bold uppercase tracking-wider text-red-400">ATIVO</span>
+                        <div class="toggle-switch w-8 h-4 rounded-full bg-red-600 relative transition-colors">
+                            <div class="toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 right-0.5 transition-all shadow-sm"></div>
+                        </div>
+                    </div>
+                </button>
             </div>
 
             <hr class="border-slate-700 my-1">
 
             <!-- Referências Espaciais -->
-            <div class="space-y-3">
-                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider flex justify-between items-center">
-                    Referências Espaciais
-                    <div class="flex items-center gap-2 cursor-pointer" onclick="document.getElementById('toggle-axes').click()">
-                        <span class="text-[10px] normal-case text-slate-300">Eixos XYZ</span>
-                        <input type="checkbox" id="toggle-axes" class="hidden" checked/>
-                        <div class="w-3 h-3 rounded-full border border-slate-400 bg-blue-500" id="axes-indicator"></div>
-                    </div>
-                </label>
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Referências Espaciais</label>
                 
-                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-plane-x').click()">
-                    <span class="text-sm text-slate-300"><span class="text-red-400 font-bold mr-1">|</span> Plano $x = 0$ (YZ)</span>
-                    <div class="relative inline-block w-10 align-middle select-none">
-                        <input type="checkbox" id="toggle-plane-x" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0"/>
-                        <label for="toggle-plane-x" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                <!-- Toggle Eixos XYZ -->
+                <button type="button" id="toggle-axes" role="switch" aria-checked="true" class="toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border border-indigo-500/50 bg-indigo-950/30 hover:bg-slate-700/60 text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-[0_0_6px_rgba(129,140,248,0.6)]"></span>
+                        <span class="text-sm font-medium text-indigo-200">Eixos XYZ</span>
                     </div>
-                </div>
+                    <div class="flex items-center gap-2 pointer-events-none">
+                        <span class="toggle-status text-[10px] font-bold uppercase tracking-wider text-indigo-400">ATIVO</span>
+                        <div class="toggle-switch w-8 h-4 rounded-full bg-indigo-600 relative transition-colors">
+                            <div class="toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 right-0.5 transition-all shadow-sm"></div>
+                        </div>
+                    </div>
+                </button>
 
-                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-plane-y').click()">
-                    <span class="text-sm text-slate-300"><span class="text-green-400 font-bold mr-1">|</span> Plano $y = 0$ (XZ)</span>
-                    <div class="relative inline-block w-10 align-middle select-none">
-                        <input type="checkbox" id="toggle-plane-y" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0"/>
-                        <label for="toggle-plane-y" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                <!-- Toggle Plano X=0 (YZ) -->
+                <button type="button" id="toggle-plane-x" role="switch" aria-checked="false" class="toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border border-slate-700 bg-slate-800/40 hover:bg-slate-700/60 text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="text-red-400 font-bold mr-0.5">|</span>
+                        <span class="text-sm text-slate-300">Plano $x = 0$ (YZ)</span>
                     </div>
-                </div>
+                    <div class="flex items-center gap-2 pointer-events-none">
+                        <span class="toggle-status text-[10px] font-bold uppercase tracking-wider text-slate-400">OCULTO</span>
+                        <div class="toggle-switch w-8 h-4 rounded-full bg-slate-600 relative transition-colors">
+                            <div class="toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 left-0.5 transition-all shadow-sm"></div>
+                        </div>
+                    </div>
+                </button>
 
-                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('toggle-plane-z').click()">
-                    <span class="text-sm text-slate-300"><span class="text-blue-400 font-bold mr-1">|</span> Plano $z = 0$ (XY)</span>
-                    <div class="relative inline-block w-10 align-middle select-none">
-                        <input type="checkbox" id="toggle-plane-z" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0"/>
-                        <label for="toggle-plane-z" class="toggle-label block overflow-hidden h-5 rounded-full cursor-pointer"><span class="toggle-dot absolute block"></span></label>
+                <!-- Toggle Plano Y=0 (XZ) -->
+                <button type="button" id="toggle-plane-y" role="switch" aria-checked="false" class="toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border border-slate-700 bg-slate-800/40 hover:bg-slate-700/60 text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400 font-bold mr-0.5">|</span>
+                        <span class="text-sm text-slate-300">Plano $y = 0$ (XZ)</span>
                     </div>
-                </div>
+                    <div class="flex items-center gap-2 pointer-events-none">
+                        <span class="toggle-status text-[10px] font-bold uppercase tracking-wider text-slate-400">OCULTO</span>
+                        <div class="toggle-switch w-8 h-4 rounded-full bg-slate-600 relative transition-colors">
+                            <div class="toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 left-0.5 transition-all shadow-sm"></div>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- Toggle Plano Z=0 (XY) -->
+                <button type="button" id="toggle-plane-z" role="switch" aria-checked="false" class="toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border border-slate-700 bg-slate-800/40 hover:bg-slate-700/60 text-left">
+                    <div class="flex items-center gap-2">
+                        <span class="text-blue-400 font-bold mr-0.5">|</span>
+                        <span class="text-sm text-slate-300">Plano $z = 0$ (XY)</span>
+                    </div>
+                    <div class="flex items-center gap-2 pointer-events-none">
+                        <span class="toggle-status text-[10px] font-bold uppercase tracking-wider text-slate-400">OCULTO</span>
+                        <div class="toggle-switch w-8 h-4 rounded-full bg-slate-600 relative transition-colors">
+                            <div class="toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 left-0.5 transition-all shadow-sm"></div>
+                        </div>
+                    </div>
+                </button>
             </div>
 
             <!-- MODO DE VERIFICAÇÃO DE SIMETRIA DINÂMICO -->
@@ -161,17 +204,31 @@
                 </select>
                 
                 <div id="sym-controls" class="hidden">
-                    <!-- Input de Ângulo (Aparece apenas em rotações) -->
-                    <div id="angle-container" class="hidden mb-3">
-                        <label class="block text-[10px] text-slate-400 mb-1">Ângulo de Rotação (graus)</label>
-                        <input type="number" id="rot-angle" value="45" step="15" class="w-full bg-slate-900 border border-slate-600 rounded px-2 py-1.5 text-xs text-white outline-none focus:border-fuchsia-500 transition-colors">
+                    <!-- Slider de Ângulo de Rotação (Aparece apenas em rotações) -->
+                    <div id="angle-container" class="hidden mb-3 p-2.5 bg-slate-900/60 rounded-lg border border-fuchsia-900/40">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="rot-angle" class="text-[11px] font-medium text-slate-300">Ângulo de Rotação ($\theta$)</label>
+                            <span id="rot-angle-val" class="px-2 py-0.5 rounded bg-fuchsia-950/80 border border-fuchsia-700/60 text-fuchsia-300 font-mono text-xs font-bold shadow-[0_0_6px_rgba(217,70,239,0.3)]">0°</span>
+                        </div>
+                        <input type="range" id="rot-angle" min="0" max="360" value="0" step="1" class="w-full accent-fuchsia-500 cursor-pointer h-2 bg-slate-700 rounded-lg appearance-none">
+                        
+                        <!-- Botões rápidos de ângulos notáveis -->
+                        <div class="flex justify-between mt-2 pt-1.5 border-t border-slate-800/80 text-[10px] text-slate-400">
+                            <button type="button" class="preset-angle-btn hover:text-fuchsia-300 transition-colors px-1 py-0.5 rounded hover:bg-fuchsia-950/40" data-angle="0">0°</button>
+                            <button type="button" class="preset-angle-btn hover:text-fuchsia-300 transition-colors px-1 py-0.5 rounded hover:bg-fuchsia-950/40" data-angle="45">45°</button>
+                            <button type="button" class="preset-angle-btn hover:text-fuchsia-300 transition-colors px-1 py-0.5 rounded hover:bg-fuchsia-950/40" data-angle="90">90°</button>
+                            <button type="button" class="preset-angle-btn hover:text-fuchsia-300 transition-colors px-1 py-0.5 rounded hover:bg-fuchsia-950/40" data-angle="180">180°</button>
+                            <button type="button" class="preset-angle-btn hover:text-fuchsia-300 transition-colors px-1 py-0.5 rounded hover:bg-fuchsia-950/40" data-angle="270">270°</button>
+                            <button type="button" class="preset-angle-btn hover:text-fuchsia-300 transition-colors px-1 py-0.5 rounded hover:bg-fuchsia-950/40" data-angle="360">360°</button>
+                        </div>
+                        <p id="rot-axis-hint" class="mt-2 text-[10px] text-slate-400 leading-tight border-t border-slate-800/80 pt-1.5"></p>
                     </div>
 
                     <label class="block text-[10px] text-slate-400 mb-1">Posição do Vetor de Teste $(x, y, z)$</label>
                     <div class="flex gap-2 mb-3">
                         <div class="flex-1 flex items-center bg-slate-900 border border-slate-600 rounded px-2">
                             <span class="text-[10px] text-red-400 font-bold mr-1">X:</span>
-                            <input type="number" id="vec-x" value="1.5" step="0.5" class="w-full bg-transparent border-none py-1 text-xs text-white outline-none">
+                            <input type="number" id="vec-x" value="1.0" step="0.5" class="w-full bg-transparent border-none py-1 text-xs text-white outline-none">
                         </div>
                         <div class="flex-1 flex items-center bg-slate-900 border border-slate-600 rounded px-2">
                             <span class="text-[10px] text-green-400 font-bold mr-1">Y:</span>
@@ -192,7 +249,7 @@
                     <!-- Mensagem de erro: SIMETRIA INVÁLIDA (Vermelho) -->
                     <div id="sym-invalid-msg" class="hidden mb-3 p-2 bg-red-900/40 border border-red-500/50 rounded-md">
                         <p class="text-xs text-red-300 font-semibold mb-1">⚠ Simetria Inválida</p>
-                        <p class="text-[10px] text-red-200/80 leading-tight">O objeto não possui simetria para este ângulo. Não há garantias de que o campo elétrico seja simétrico nesta posição.</p>
+                        <p id="sym-invalid-text" class="text-[10px] text-red-200/80 leading-tight">O objeto não possui simetria para este ângulo. Não há garantias de que o campo elétrico seja simétrico nesta posição.</p>
                     </div>
 
                     <!-- Legenda -->
@@ -200,7 +257,8 @@
                         <div class="flex items-center mb-1"><span class="w-2.5 h-2.5 rounded-full bg-fuchsia-500 mr-2 shadow-[0_0_3px_#d946ef]"></span> Vetor Original ($\vec{r}$)</div>
                         <div class="flex items-center mb-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 mr-2 shadow-[0_0_3px_#22d3ee]"></span> Vetor Simétrico ($\vec{r}'$)</div>
                         <div class="flex items-center mb-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 mr-2 shadow-[0_0_3px_#a855f7]"></span> Coincidente (Invariante)</div>
-                        <div class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-red-500 mr-1 shadow-[0_0_3px_#ef4444]"></span> / <span class="w-2.5 h-2.5 rounded-full bg-gray-500 ml-1 mr-2"></span> Sem Simetria</div>
+                        <div class="flex items-center mb-1"><span class="w-2.5 h-2.5 rounded-full bg-red-500 mr-1 shadow-[0_0_3px_#ef4444]"></span> / <span class="w-2.5 h-2.5 rounded-full bg-gray-500 ml-1 mr-2"></span> Sem Simetria</div>
+                        <div class="flex items-center mt-1.5 pt-1.5 border-t border-slate-700/60"><span class="w-2.5 h-2.5 rounded-sm bg-slate-400/40 border border-slate-300 mr-2 shadow-[0_0_3px_#94a3b8]"></span> Holograma Rotacionado ($R_\theta$)</div>
                     </div>
                 </div>
             </div>
@@ -220,26 +278,26 @@
         const contentData = {
             sphere: {
                 title: "Simetria Esférica",
-                dimensions: "<b>Carga:</b> Raio = $1.5$ <br> <b>Gaussiana:</b> Raio = $3.5$",
-                desc: "Uma esfera centrada na origem possui todas as simetrias possíveis. Por isso, $E$ depende apenas de $|\\vec{r}|$ (distância à origem) e sua direção é puramente radial. Sendo paralelo ao vetor área $d\\mathbf{A}$, $E$ sai da integral.",
+                dimensions: "<b>Carga:</b> Raio = $1.5$ <br> <b>Gaussiana:</b> Raio = $3.5$ (segmentada em planos curvados $\\Delta A$)",
+                desc: "Uma esfera centrada na origem possui todas as simetrias possíveis. A superfície gaussiana é aproximada pela montagem de planos curvados (elementos de área $\\Delta A_i$). Em cada um, $\\vec{E}$ é perpendicular e constante em módulo, saindo da integral: $\\oint \\vec{E} \\cdot d\\mathbf{A} = E \\sum \\Delta A = E(4\\pi r^2)$.",
                 math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = E(4\\pi r^2) = \\frac{q_{int}}{\\epsilon_0} $$"
             },
             cylinder: {
                 title: "Simetria Cilíndrica",
-                dimensions: "<b>Carga:</b> Raio = $1.0$ (ao longo do eixo Y)<br> <b>Gaussiana:</b> Raio = $3.0$ | Altura = $6.0$",
-                desc: "Um fio infinito sobre o eixo Y possui simetria de rotação contínua em torno de Y e reflexão em Y. O campo é radial ao eixo Y. O fluxo pelas bases planas da Gaussiana é nulo, sobrando a lateral.",
+                dimensions: "<b>Carga:</b> Fio infinito ($R=1.0$) atravessando a esfera do espaço<br> <b>Gaussiana:</b> Raio = $3.0$ | Altura = $6.0$ (segmentada em painéis $\\Delta A$)",
+                desc: "O fio/cilindro estende-se por todo o espaço esférico com circunferências nos limites. A superfície gaussiana cilíndrica é discretizada em painéis curvados na parede lateral e setores circulares nas tampas. Nas tampas, $\\vec{E} \\perp \\hat{n}$ (fluxo nulo); na parede lateral, $\\vec{E} \\parallel \\hat{n}$ e uniforme, somando: $\\sum E \\Delta A = E(2\\pi r L)$.",
                 math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = E(2\\pi r L) = \\frac{\\lambda L}{\\epsilon_0} $$"
             },
             plane: {
-                title: "Simetria Plana",
-                dimensions: "<b>Placa:</b> Em $y=0$ com espessura $= 0.1$ <br> <b>Gaussiana (Cilindro):</b> Tampas em $y=\\pm 2.0$",
-                desc: "Uma placa infinita no plano XZ ($y=0$) possui rotação contínua em torno de Y e reflexões em X e Z. O campo aponta puramente na direção normal (Y). Gaussiana: Cilindro (Pillbox).",
+                title: "Simetria Planar",
+                dimensions: "<b>Placa:</b> Em $z=0$ estendendo-se até a linha do horizonte esférico<br> <b>Gaussiana (Cilindro):</b> Raio = $2.0$ | Tampas em $z=\\pm 2.0$ (painéis $\\Delta A$)",
+                desc: "Uma placa infinita no plano XY ($z=0$) corta o espaço até a linha do horizonte. A superfície gaussiana (caixa de pílula) é segmentada em painéis discretos. Na parede lateral, $\\vec{E} \\perp \\hat{n}$ (fluxo nulo). Nas duas tampas planas ($z = \\pm 2.0$), $\\vec{E}$ é perpendicular aos painéis e uniforme, somando $E(2A)$.",
                 math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = E(2A) = \\frac{\\sigma A}{\\epsilon_0} $$"
             },
             cube: {
                 title: "Assimetria (Distribuição Cúbica)",
-                dimensions: "<b>Carga:</b> Cubo de Lado = $3.0$ (vai de $-1.5$ a $1.5$) <br> <b>Gaussiana:</b> Cubo de Lado = $4.0$",
-                desc: "Um cubo possui rotações discretas (apenas múltiplos de 90°), mas <b>não possui rotações contínuas</b>. Tentar usar Gauss para simetrias diferentes resultará em erros, pois o campo varia na superfície.",
+                dimensions: "<b>Carga:</b> Cubo de Lado = $3.0$ (vai de $-1.5$ a $1.5$) <br> <b>Gaussiana:</b> Cubo de Lado = $4.0$ (grid de painéis $\\Delta A$ em cada face)",
+                desc: "Um cubo possui rotações discretas (múltiplos de 90°), mas <b>não possui rotações contínuas</b>. Ao dividir as faces da gaussiana em painéis $\\Delta A_i$, vemos que tanto o módulo quanto a direção de $\\vec{E}$ variam (centro vs. bordas e vértices). Por isso, $\\vec{E}$ não pode sair da integral!",
                 math: "$$ \\oint \\mathbf{E} \\cdot d\\mathbf{A} = \\iint \\vec{E}(x,y,z) \\cdot \\hat{n} dA $$"
             }
         };
@@ -257,8 +315,8 @@
 
         const shapeSymmetries = {
             sphere: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_x', 'rot_y', 'rot_z'],
-            cylinder: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_y'],
-            plane: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_y'],
+            cylinder: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_x', 'rot_y', 'rot_z'],
+            plane: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_x', 'rot_y', 'rot_z'],
             cube: ['refl_x', 'refl_y', 'refl_z', 'inv', 'rot_x', 'rot_y', 'rot_z']
         };
 
@@ -267,8 +325,12 @@
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x0f172a);
 
+        // Raio da esfera que limita o nosso espaço observável
+        const R_bound = 14.0;
+
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(10, 8, 12);
+        camera.up.set(0, 0, 1);
+        camera.position.set(13, -16, 11);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -278,15 +340,69 @@
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
+        controls.maxDistance = 60;
+        controls.minDistance = 2;
 
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8); dirLight.position.set(10, 20, 10); scene.add(dirLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8); dirLight.position.set(10, 10, 20); scene.add(dirLight);
         const dirLight2 = new THREE.DirectionalLight(0x93c5fd, 0.4); dirLight2.position.set(-10, -10, -10); scene.add(dirLight2);
 
         // --- GRUPOS GLOBAIS ---
         const mainGroup = new THREE.Group(); scene.add(mainGroup);
         const referenceGroup = new THREE.Group(); scene.add(referenceGroup);
+        const boundaryGroup = new THREE.Group(); scene.add(boundaryGroup);
         const symmetryTestGroup = new THREE.Group(); scene.add(symmetryTestGroup);
+
+        // --- CONSTRUÇÃO DA ESFERA LIMITE DO ESPAÇO ---
+        function buildBoundarySphere() {
+            clearGroup(boundaryGroup);
+            
+            // Domo esférico translúcido que delimita o espaço observável
+            const boundGeo = new THREE.SphereGeometry(R_bound, 48, 24);
+            const boundMat = new THREE.MeshBasicMaterial({
+                color: 0x38bdf8,
+                transparent: true,
+                opacity: 0.04,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            const boundMesh = new THREE.Mesh(boundGeo, boundMat);
+            boundaryGroup.add(boundMesh);
+
+            // Malha de coordenadas esféricas (latitude e longitude celestes)
+            const wireGeo = new THREE.WireframeGeometry(new THREE.SphereGeometry(R_bound, 24, 12));
+            const wireMat = new THREE.LineBasicMaterial({
+                color: 0x64748b,
+                transparent: true,
+                opacity: 0.15,
+                depthWrite: false
+            });
+            const boundWire = new THREE.LineSegments(wireGeo, wireMat);
+            boundaryGroup.add(boundWire);
+
+            // Linhas dos grandes círculos celestes da esfera (equador z=0, meridianos x=0 e y=0)
+            function addCelestialCircle(basis) {
+                const pts = [];
+                for (let i = 0; i <= 64; i++) {
+                    const a = (i / 64) * Math.PI * 2;
+                    pts.push(new THREE.Vector3(R_bound * Math.cos(a), R_bound * Math.sin(a), 0));
+                }
+                const geo = new THREE.BufferGeometry().setFromPoints(pts);
+                if (basis) geo.applyMatrix4(basis);
+                const line = new THREE.Line(
+                    geo,
+                    new THREE.LineDashedMaterial({ color: 0x38bdf8, dashSize: 0.4, gapSize: 0.3, transparent: true, opacity: 0.30 })
+                );
+                line.computeLineDistances();
+                boundaryGroup.add(line);
+            }
+            // Equador celeste (z = 0)
+            addCelestialCircle(null);
+            // Meridiano celeste (x = 0)
+            addCelestialCircle(new THREE.Matrix4().makeBasis(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0)));
+            // Meridiano celeste (y = 0)
+            addCelestialCircle(new THREE.Matrix4().makeBasis(new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0)));
+        }
 
         // --- MATERIAIS COMUNS ---
         const chargeMaterial = new THREE.MeshPhysicalMaterial({ 
@@ -311,29 +427,149 @@
             depthWrite: false 
         });
 
+        // Materiais para o holograma rotacionado nas semelhanças de rotação (Cinza suave translúcido)
+        const copyChargeMat = new THREE.MeshPhysicalMaterial({
+            color: 0x94a3b8, // Cinza ardósia suave
+            transparent: true,
+            opacity: 0.16,
+            roughness: 0.3,
+            metalness: 0.1,
+            side: THREE.DoubleSide,
+            depthWrite: false
+        });
+
+        const copyGaussMat = new THREE.MeshPhysicalMaterial({
+            color: 0x94a3b8,
+            transparent: true,
+            opacity: 0.08,
+            roughness: 0.2,
+            metalness: 0.1,
+            side: THREE.DoubleSide,
+            depthWrite: false
+        });
+        const copyBorderColor = 0x94a3b8;
+
         // --- EIXOS E PLANOS CARTESIANOS ---
-        const axesSize = 10;
-        const planeSize = 12;
-        
+        const axesSize = 14;
         const axesHelper = new THREE.AxesHelper(axesSize); referenceGroup.add(axesHelper);
 
-        const matPlaneX = new THREE.MeshBasicMaterial({ color: 0xff4444, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false });
-        const matPlaneY = new THREE.MeshBasicMaterial({ color: 0x44ff44, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false });
-        const matPlaneZ = new THREE.MeshBasicMaterial({ color: 0x4444ff, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false });
+        // Função geradora de planos cartesianos com divisão esférica idêntica ao plano infinito
+        function createSphericalCartesianPlane(axis, baseColorHex, brightColorHex) {
+            let u, v, n;
+            if (axis === 'x') {
+                u = new THREE.Vector3(0, 1, 0); // Y
+                v = new THREE.Vector3(0, 0, 1); // Z (apontado para cima)
+                n = new THREE.Vector3(1, 0, 0); // X (normal ao plano x = 0)
+            } else if (axis === 'y') {
+                u = new THREE.Vector3(0, 0, 1); // Z (apontado para cima)
+                v = new THREE.Vector3(1, 0, 0); // X
+                n = new THREE.Vector3(0, 1, 0); // Y (normal ao plano y = 0)
+            } else {
+                u = new THREE.Vector3(1, 0, 0); // X
+                v = new THREE.Vector3(0, 1, 0); // Y
+                n = new THREE.Vector3(0, 0, 1); // Z (normal ao plano z = 0)
+            }
 
-        const cartesianPlaneGeo = new THREE.PlaneGeometry(planeSize, planeSize);
+            const basis = new THREE.Matrix4().makeBasis(u, v, n);
 
-        const planeX0 = new THREE.Mesh(cartesianPlaneGeo, matPlaneX); planeX0.rotation.y = Math.PI / 2;
-        const gridX = new THREE.GridHelper(planeSize, 12, 0xff4444, 0xff4444); gridX.rotation.z = Math.PI / 2; gridX.material.opacity = 0.3; gridX.material.transparent = true;
-        const groupPlaneX = new THREE.Group(); groupPlaneX.add(planeX0); groupPlaneX.add(gridX); referenceGroup.add(groupPlaneX);
+            // 1. Disco circular que se estende por todo o espaço até o horizonte da esfera (R_bound)
+            const discGeo = new THREE.CircleGeometry(R_bound, 64);
+            discGeo.applyMatrix4(basis);
+            const discMat = new THREE.MeshBasicMaterial({
+                color: baseColorHex,
+                transparent: true,
+                opacity: 0.10,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            const discMesh = new THREE.Mesh(discGeo, discMat);
 
-        const planeY0 = new THREE.Mesh(cartesianPlaneGeo, matPlaneY); planeY0.rotation.x = Math.PI / 2;
-        const gridY = new THREE.GridHelper(planeSize, 12, 0x44ff44, 0x44ff44); gridY.material.opacity = 0.3; gridY.material.transparent = true;
-        const groupPlaneY = new THREE.Group(); groupPlaneY.add(planeY0); groupPlaneY.add(gridY); referenceGroup.add(groupPlaneY);
+            // 2. Linha brilhante no horizonte da esfera (circunferência externa delimitando o plano)
+            const horizonPts = [];
+            for (let i = 0; i <= 128; i++) {
+                const a = (i / 128) * Math.PI * 2;
+                horizonPts.push(new THREE.Vector3(R_bound * Math.cos(a), R_bound * Math.sin(a), 0));
+            }
+            const horizonGeo = new THREE.BufferGeometry().setFromPoints(horizonPts);
+            horizonGeo.applyMatrix4(basis);
+            const horizonLine = new THREE.Line(horizonGeo, new THREE.LineBasicMaterial({
+                color: brightColorHex,
+                linewidth: 2,
+                transparent: true,
+                opacity: 0.95
+            }));
 
-        const planeZ0 = new THREE.Mesh(cartesianPlaneGeo, matPlaneZ);
-        const gridZ = new THREE.GridHelper(planeSize, 12, 0x4444ff, 0x4444ff); gridZ.rotation.x = Math.PI / 2; gridZ.material.opacity = 0.3; gridZ.material.transparent = true;
-        const groupPlaneZ = new THREE.Group(); groupPlaneZ.add(planeZ0); groupPlaneZ.add(gridZ); referenceGroup.add(groupPlaneZ);
+            // 3. Anel de brilho suave no horizonte
+            const horizonRingGeo = new THREE.RingGeometry(R_bound - 0.35, R_bound + 0.05, 64);
+            horizonRingGeo.applyMatrix4(basis);
+            const horizonRingMat = new THREE.MeshBasicMaterial({
+                color: brightColorHex,
+                transparent: true,
+                opacity: 0.45,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            const horizonRing = new THREE.Mesh(horizonRingGeo, horizonRingMat);
+
+            // 4. Divisões e malha interna (círculos concêntricos e grade cartesiana delimitada pela esfera)
+            const gridPts = [];
+            
+            // Círculos concêntricos de escala (r = 3.5, 7.0, 10.5)
+            const ringRadii = [3.5, 7.0, 10.5];
+            for (const r of ringRadii) {
+                for (let i = 0; i < 64; i++) {
+                    const a1 = (i / 64) * Math.PI * 2;
+                    const a2 = ((i + 1) / 64) * Math.PI * 2;
+                    gridPts.push(
+                        r * Math.cos(a1), r * Math.sin(a1), 0,
+                        r * Math.cos(a2), r * Math.sin(a2), 0
+                    );
+                }
+            }
+
+            // Grade cartesiana a cada 2.0 unidades, recortada perfeitamente na fronteira do disco
+            const gridStep = 2.0;
+            for (let k = -12.0; k <= 12.0; k += gridStep) {
+                if (Math.abs(k) < 0.001) continue;
+                const span = Math.sqrt(Math.max(0, R_bound * R_bound - k * k));
+                gridPts.push(k, -span, 0, k, span, 0);
+                gridPts.push(-span, k, 0, span, k, 0);
+            }
+
+            // Eixos centrais que cortam o plano de horizonte a horizonte
+            gridPts.push(
+                -R_bound, 0, 0, R_bound, 0, 0,
+                0, -R_bound, 0, 0, R_bound, 0
+            );
+
+            const gridGeo = new THREE.BufferGeometry();
+            gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridPts, 3));
+            gridGeo.applyMatrix4(basis);
+            const gridMat = new THREE.LineBasicMaterial({
+                color: brightColorHex,
+                transparent: true,
+                opacity: 0.22,
+                depthWrite: false
+            });
+            const gridLines = new THREE.LineSegments(gridGeo, gridMat);
+
+            const group = new THREE.Group();
+            group.add(discMesh);
+            group.add(horizonLine);
+            group.add(horizonRing);
+            group.add(gridLines);
+
+            return group;
+        }
+
+        const groupPlaneX = createSphericalCartesianPlane('x', 0xef4444, 0xff6b6b);
+        referenceGroup.add(groupPlaneX);
+
+        const groupPlaneY = createSphericalCartesianPlane('y', 0x22c55e, 0x4ade80);
+        referenceGroup.add(groupPlaneY);
+
+        const groupPlaneZ = createSphericalCartesianPlane('z', 0x3b82f6, 0x60a5fa);
+        referenceGroup.add(groupPlaneZ);
 
         // Estado inicial
         let currentShape = 'sphere';
@@ -347,7 +583,6 @@
 
         function updateReferencesVisibility() {
             axesHelper.visible = showAxes;
-            document.getElementById('axes-indicator').className = showAxes ? "w-3 h-3 rounded-full border border-slate-400 bg-blue-500" : "w-3 h-3 rounded-full border border-slate-500 bg-transparent";
             groupPlaneX.visible = showPlaneX;
             groupPlaneY.visible = showPlaneY;
             groupPlaneZ.visible = showPlaneZ;
@@ -356,10 +591,17 @@
         function clearGroup(group) {
             while(group.children.length > 0){ 
                 const child = group.children[0];
+                if(child.children && child.children.length > 0) {
+                    clearGroup(child);
+                }
                 if(child.geometry) child.geometry.dispose();
                 if(child.material) {
-                    if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
-                    else child.material.dispose();
+                    const isShared = (m) => (m === chargeMaterial || m === gaussianMaterial || m === copyChargeMat || m === copyGaussMat);
+                    if (Array.isArray(child.material)) {
+                        child.material.forEach(m => { if (!isShared(m)) m.dispose(); });
+                    } else if (!isShared(child.material)) {
+                        child.material.dispose();
+                    }
                 }
                 group.remove(child); 
             }
@@ -369,8 +611,33 @@
         }
 
         // --- VALIDAÇÕES GEOMÉTRICAS ---
-        function checkSymmetryValid(shape, symType, angleDeg) {
-            if (symType !== 'rot') return true; 
+        function checkSymmetryValid(shape, symKey, symInfo, angleDeg) {
+            if (!symInfo || symInfo.type !== 'rot') return true; 
+            
+            const rem360 = Math.abs(angleDeg % 360);
+            const isZero = (rem360 < 0.001 || Math.abs(rem360 - 360) < 0.001);
+            if (isZero) return true; // 0° ou 360° é a identidade trivial (sem rotação efetiva)
+            
+            if (shape === 'sphere') {
+                return true; // Simetria esférica contínua em qualquer eixo (X, Y ou Z)
+            }
+            
+            if (shape === 'cylinder') {
+                // Rotação em torno do eixo longitudinal (Z) é simétrica para qualquer ângulo
+                if (symInfo.axis === 'z') return true;
+                // Rotações em torno de X ou Y possuem simetria somente nos ângulos de 180° e 360°
+                const rem180 = Math.abs(angleDeg % 180);
+                return (rem180 < 0.001 || Math.abs(rem180 - 180) < 0.001);
+            }
+            
+            if (shape === 'plane') {
+                // Rotação em torno do eixo normal (Z) é simétrica para qualquer ângulo
+                if (symInfo.axis === 'z') return true;
+                // Rotações em torno de X ou Y possuem simetria somente nos ângulos de 180° e 360°
+                const rem180 = Math.abs(angleDeg % 180);
+                return (rem180 < 0.001 || Math.abs(rem180 - 180) < 0.001);
+            }
+            
             if (shape === 'cube') {
                 const rem = Math.abs(angleDeg % 90);
                 return (rem < 0.001 || Math.abs(rem - 90) < 0.001);
@@ -383,13 +650,439 @@
             if (shape === 'sphere') {
                 return p.length() <= 1.5 + tol;
             } else if (shape === 'cylinder') {
-                return Math.sqrt(p.x*p.x + p.z*p.z) <= 1.0 + tol && p.y >= -6.0 - tol && p.y <= 6.0 + tol;
+                const zCap = Math.sqrt(R_bound * R_bound - 1.0);
+                return Math.sqrt(p.x*p.x + p.y*p.y) <= 1.0 + tol && Math.abs(p.z) <= zCap + tol;
             } else if (shape === 'plane') {
-                return Math.abs(p.x) <= 5.0 + tol && Math.abs(p.z) <= 5.0 + tol && Math.abs(p.y) <= 0.05 + tol;
+                return Math.sqrt(p.x*p.x + p.y*p.y) <= R_bound + tol && Math.abs(p.z) <= 0.05 + tol;
             } else if (shape === 'cube') {
                 return Math.abs(p.x) <= 1.5 + tol && Math.abs(p.y) <= 1.5 + tol && Math.abs(p.z) <= 1.5 + tol;
             }
             return true;
+        }
+
+        // Construtor da superfície gaussiana esférica segmentada em planos curvados (elementos dA)
+        function createSegmentedGaussianSphere(radius = 3.5, nPhi = 9, nTheta = 16, gapRatio = 0.05, customMat = null, customBorderColor = null) {
+            const group = new THREE.Group();
+            
+            const positions = [];
+            const normals = [];
+            const linePositions = [];
+            
+            // Subdivisões internas de cada painel para manter sua curvatura precisa
+            const subPhi = 2;
+            const subTheta = 2;
+            
+            for (let i = 0; i < nPhi; i++) {
+                const phiStart = (i / nPhi) * Math.PI;
+                const phiEnd = ((i + 1) / nPhi) * Math.PI;
+                const dPhi = phiEnd - phiStart;
+                
+                // Gap angular entre os painéis em latitude
+                const p0 = phiStart + dPhi * gapRatio;
+                const p1 = phiEnd - dPhi * gapRatio;
+                
+                for (let j = 0; j < nTheta; j++) {
+                    const thetaStart = (j / nTheta) * Math.PI * 2;
+                    const thetaEnd = ((j + 1) / nTheta) * Math.PI * 2;
+                    const dTheta = thetaEnd - thetaStart;
+                    
+                    // Gap angular entre os painéis em longitude
+                    const t0 = thetaStart + dTheta * gapRatio;
+                    const t1 = thetaEnd - dTheta * gapRatio;
+                    
+                    const panelGrid = [];
+                    for (let u = 0; u <= subPhi; u++) {
+                        panelGrid[u] = [];
+                        const curPhi = p0 + (p1 - p0) * (u / subPhi);
+                        for (let v = 0; v <= subTheta; v++) {
+                            const curTheta = t0 + (t1 - t0) * (v / subTheta);
+                            const sinP = Math.sin(curPhi);
+                            const cosP = Math.cos(curPhi);
+                            const sinT = Math.sin(curTheta);
+                            const cosT = Math.cos(curTheta);
+                            
+                            const nx = sinP * cosT;
+                            const ny = sinP * sinT;
+                            const nz = cosP;
+                            
+                            panelGrid[u][v] = {
+                                pos: new THREE.Vector3(radius * nx, radius * ny, radius * nz),
+                                norm: new THREE.Vector3(nx, ny, nz)
+                            };
+                        }
+                    }
+                    
+                    // Triângulos do plano curvado
+                    for (let u = 0; u < subPhi; u++) {
+                        for (let v = 0; v < subTheta; v++) {
+                            const pA = panelGrid[u][v];
+                            const pB = panelGrid[u + 1][v];
+                            const pC = panelGrid[u + 1][v + 1];
+                            const pD = panelGrid[u][v + 1];
+                            
+                            // Triângulo 1: A, B, C
+                            positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                            positions.push(pB.pos.x, pB.pos.y, pB.pos.z);
+                            positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                            normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                            normals.push(pB.norm.x, pB.norm.y, pB.norm.z);
+                            normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                            
+                            // Triângulo 2: A, C, D
+                            positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                            positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                            positions.push(pD.pos.x, pD.pos.y, pD.pos.z);
+                            normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                            normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                            normals.push(pD.norm.x, pD.norm.y, pD.norm.z);
+                        }
+                    }
+                    
+                    // Bordas perimetrais que delimitam o plano curvado
+                    for (let v = 0; v < subTheta; v++) {
+                        const pStart = panelGrid[0][v].pos;
+                        const pNext = panelGrid[0][v + 1].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                    for (let u = 0; u < subPhi; u++) {
+                        const pStart = panelGrid[u][subTheta].pos;
+                        const pNext = panelGrid[u + 1][subTheta].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                    for (let v = subTheta; v > 0; v--) {
+                        const pStart = panelGrid[subPhi][v].pos;
+                        const pNext = panelGrid[subPhi][v - 1].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                    for (let u = subPhi; u > 0; u--) {
+                        const pStart = panelGrid[u][0].pos;
+                        const pNext = panelGrid[u - 1][0].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                }
+            }
+            
+            const panelGeo = new THREE.BufferGeometry();
+            panelGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            panelGeo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+            
+            const panelMesh = new THREE.Mesh(panelGeo, customMat || gaussianMaterial);
+            group.add(panelMesh);
+            
+            // Linhas demarcatórias iluminadas dos planos curvados
+            const borderGeo = new THREE.BufferGeometry();
+            borderGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            const borderMat = new THREE.LineBasicMaterial({
+                color: customBorderColor !== null ? customBorderColor : 0x93c5fd,
+                transparent: true,
+                opacity: customBorderColor !== null ? 0.35 : 0.75,
+                depthWrite: false
+            });
+            const borderLines = new THREE.LineSegments(borderGeo, borderMat);
+            group.add(borderLines);
+            
+            return group;
+        }
+
+        // Construtor da superfície gaussiana cilíndrica segmentada em painéis curvados e setores nas tampas
+        function createSegmentedGaussianCylinder(radius = 3.0, height = 6.0, nZ = 5, nTheta = 14, nRings = 2, gapRatio = 0.05, customMat = null, customBorderColor = null) {
+            const group = new THREE.Group();
+            
+            const positions = [];
+            const normals = [];
+            const linePositions = [];
+            
+            // --- 1. Parede lateral cilíndrica segmentada em planos curvados ---
+            const subZ = 1;
+            const subTheta = 2;
+            
+            for (let i = 0; i < nZ; i++) {
+                const zStart = -height / 2 + (i / nZ) * height;
+                const zEnd = -height / 2 + ((i + 1) / nZ) * height;
+                const dz = zEnd - zStart;
+                const z0 = zStart + dz * gapRatio;
+                const z1 = zEnd - dz * gapRatio;
+                
+                for (let j = 0; j < nTheta; j++) {
+                    const thetaStart = (j / nTheta) * Math.PI * 2;
+                    const thetaEnd = ((j + 1) / nTheta) * Math.PI * 2;
+                    const dTheta = thetaEnd - thetaStart;
+                    const t0 = thetaStart + dTheta * gapRatio;
+                    const t1 = thetaEnd - dTheta * gapRatio;
+                    
+                    const panelGrid = [];
+                    for (let u = 0; u <= subZ; u++) {
+                        panelGrid[u] = [];
+                        const curZ = z0 + (z1 - z0) * (u / subZ);
+                        for (let v = 0; v <= subTheta; v++) {
+                            const curT = t0 + (t1 - t0) * (v / subTheta);
+                            const cosT = Math.cos(curT);
+                            const sinT = Math.sin(curT);
+                            
+                            panelGrid[u][v] = {
+                                pos: new THREE.Vector3(radius * cosT, radius * sinT, curZ),
+                                norm: new THREE.Vector3(cosT, sinT, 0)
+                            };
+                        }
+                    }
+                    
+                    // Triângulos do painel lateral curvado
+                    for (let u = 0; u < subZ; u++) {
+                        for (let v = 0; v < subTheta; v++) {
+                            const pA = panelGrid[u][v];
+                            const pB = panelGrid[u + 1][v];
+                            const pC = panelGrid[u + 1][v + 1];
+                            const pD = panelGrid[u][v + 1];
+                            
+                            // Triângulo 1: A, D, C (CCW visto de fora)
+                            positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                            positions.push(pD.pos.x, pD.pos.y, pD.pos.z);
+                            positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                            normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                            normals.push(pD.norm.x, pD.norm.y, pD.norm.z);
+                            normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                            
+                            // Triângulo 2: A, C, B
+                            positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                            positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                            positions.push(pB.pos.x, pB.pos.y, pB.pos.z);
+                            normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                            normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                            normals.push(pB.norm.x, pB.norm.y, pB.norm.z);
+                        }
+                    }
+                    
+                    // Bordas perimetrais que delimitam o painel lateral
+                    for (let v = 0; v < subTheta; v++) {
+                        const pStart = panelGrid[0][v].pos;
+                        const pNext = panelGrid[0][v + 1].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                    for (let u = 0; u < subZ; u++) {
+                        const pStart = panelGrid[u][subTheta].pos;
+                        const pNext = panelGrid[u + 1][subTheta].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                    for (let v = subTheta; v > 0; v--) {
+                        const pStart = panelGrid[subZ][v].pos;
+                        const pNext = panelGrid[subZ][v - 1].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                    for (let u = subZ; u > 0; u--) {
+                        const pStart = panelGrid[u][0].pos;
+                        const pNext = panelGrid[u - 1][0].pos;
+                        linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                    }
+                }
+            }
+            
+            // --- 2. Tampas circulares (superior e inferior) segmentadas ---
+            const caps = [
+                { z: height / 2, normalZ: 1 },
+                { z: -height / 2, normalZ: -1 }
+            ];
+            
+            const subR = 1;
+            for (const cap of caps) {
+                for (let rIdx = 0; rIdx < nRings; rIdx++) {
+                    const rStart = (rIdx / nRings) * radius;
+                    const rEnd = ((rIdx + 1) / nRings) * radius;
+                    const dr = rEnd - rStart;
+                    const r0 = rIdx === 0 ? Math.max(0.04 * radius, dr * gapRatio) : rStart + dr * gapRatio;
+                    const r1 = rEnd - dr * gapRatio;
+                    
+                    for (let j = 0; j < nTheta; j++) {
+                        const thetaStart = (j / nTheta) * Math.PI * 2;
+                        const thetaEnd = ((j + 1) / nTheta) * Math.PI * 2;
+                        const dTheta = thetaEnd - thetaStart;
+                        const t0 = thetaStart + dTheta * gapRatio;
+                        const t1 = thetaEnd - dTheta * gapRatio;
+                        
+                        const panelGrid = [];
+                        for (let u = 0; u <= subR; u++) {
+                            panelGrid[u] = [];
+                            const curR = r0 + (r1 - r0) * (u / subR);
+                            for (let v = 0; v <= subTheta; v++) {
+                                const curT = t0 + (t1 - t0) * (v / subTheta);
+                                panelGrid[u][v] = {
+                                    pos: new THREE.Vector3(curR * Math.cos(curT), curR * Math.sin(curT), cap.z),
+                                    norm: new THREE.Vector3(0, 0, cap.normalZ)
+                                };
+                            }
+                        }
+                        
+                        // Triângulos do painel da tampa
+                        for (let u = 0; u < subR; u++) {
+                            for (let v = 0; v < subTheta; v++) {
+                                const pA = panelGrid[u][v];
+                                const pB = panelGrid[u + 1][v];
+                                const pC = panelGrid[u + 1][v + 1];
+                                const pD = panelGrid[u][v + 1];
+                                
+                                if (cap.normalZ > 0) {
+                                    // Tampa superior (+Z)
+                                    positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                                    positions.push(pB.pos.x, pB.pos.y, pB.pos.z);
+                                    positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                                    normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                                    normals.push(pB.norm.x, pB.norm.y, pB.norm.z);
+                                    normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                                    
+                                    positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                                    positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                                    positions.push(pD.pos.x, pD.pos.y, pD.pos.z);
+                                    normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                                    normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                                    normals.push(pD.norm.x, pD.norm.y, pD.norm.z);
+                                } else {
+                                    // Tampa inferior (-Z)
+                                    positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                                    positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                                    positions.push(pB.pos.x, pB.pos.y, pB.pos.z);
+                                    normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                                    normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                                    normals.push(pB.norm.x, pB.norm.y, pB.norm.z);
+                                    
+                                    positions.push(pA.pos.x, pA.pos.y, pA.pos.z);
+                                    positions.push(pD.pos.x, pD.pos.y, pD.pos.z);
+                                    positions.push(pC.pos.x, pC.pos.y, pC.pos.z);
+                                    normals.push(pA.norm.x, pA.norm.y, pA.norm.z);
+                                    normals.push(pD.norm.x, pD.norm.y, pD.norm.z);
+                                    normals.push(pC.norm.x, pC.norm.y, pC.norm.z);
+                                }
+                            }
+                        }
+                        
+                        // Bordas perimetrais do painel da tampa
+                        for (let v = 0; v < subTheta; v++) {
+                            const pStart = panelGrid[0][v].pos;
+                            const pNext = panelGrid[0][v + 1].pos;
+                            linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                        }
+                        for (let u = 0; u < subR; u++) {
+                            const pStart = panelGrid[u][subTheta].pos;
+                            const pNext = panelGrid[u + 1][subTheta].pos;
+                            linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                        }
+                        for (let v = subTheta; v > 0; v--) {
+                            const pStart = panelGrid[subR][v].pos;
+                            const pNext = panelGrid[subR][v - 1].pos;
+                            linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                        }
+                        for (let u = subR; u > 0; u--) {
+                            const pStart = panelGrid[u][0].pos;
+                            const pNext = panelGrid[u - 1][0].pos;
+                            linePositions.push(pStart.x, pStart.y, pStart.z, pNext.x, pNext.y, pNext.z);
+                        }
+                    }
+                }
+            }
+            
+            const panelGeo = new THREE.BufferGeometry();
+            panelGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            panelGeo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+            const panelMesh = new THREE.Mesh(panelGeo, customMat || gaussianMaterial);
+            group.add(panelMesh);
+            
+            const borderGeo = new THREE.BufferGeometry();
+            borderGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            const borderMat = new THREE.LineBasicMaterial({
+                color: customBorderColor !== null ? customBorderColor : 0x93c5fd,
+                transparent: true,
+                opacity: customBorderColor !== null ? 0.35 : 0.75,
+                depthWrite: false
+            });
+            group.add(new THREE.LineSegments(borderGeo, borderMat));
+            
+            return group;
+        }
+
+        // Construtor da superfície gaussiana cúbica segmentada em uma malha de painéis planos por face
+        function createSegmentedGaussianCube(size = 4.0, gridN = 4, gapRatio = 0.05, customMat = null, customBorderColor = null) {
+            const group = new THREE.Group();
+            
+            const positions = [];
+            const normals = [];
+            const linePositions = [];
+            
+            const half = size / 2;
+            
+            // 6 faces ortogonais com bases orientadas para que u x v = normal
+            const faces = [
+                { normal: new THREE.Vector3(1, 0, 0), u: new THREE.Vector3(0, 1, 0), v: new THREE.Vector3(0, 0, 1) },
+                { normal: new THREE.Vector3(-1, 0, 0), u: new THREE.Vector3(0, -1, 0), v: new THREE.Vector3(0, 0, 1) },
+                { normal: new THREE.Vector3(0, 1, 0), u: new THREE.Vector3(-1, 0, 0), v: new THREE.Vector3(0, 0, 1) },
+                { normal: new THREE.Vector3(0, -1, 0), u: new THREE.Vector3(1, 0, 0), v: new THREE.Vector3(0, 0, 1) },
+                { normal: new THREE.Vector3(0, 0, 1), u: new THREE.Vector3(1, 0, 0), v: new THREE.Vector3(0, 1, 0) },
+                { normal: new THREE.Vector3(0, 0, -1), u: new THREE.Vector3(1, 0, 0), v: new THREE.Vector3(0, -1, 0) }
+            ];
+            
+            const dStep = size / gridN;
+            
+            for (const face of faces) {
+                const faceCenter = face.normal.clone().multiplyScalar(half);
+                
+                for (let i = 0; i < gridN; i++) {
+                    const uStart = -half + i * dStep;
+                    const uEnd = uStart + dStep;
+                    const du = dStep;
+                    const u0 = uStart + du * gapRatio;
+                    const u1 = uEnd - du * gapRatio;
+                    
+                    for (let j = 0; j < gridN; j++) {
+                        const vStart = -half + j * dStep;
+                        const vEnd = vStart + dStep;
+                        const dv = dStep;
+                        const v0 = vStart + dv * gapRatio;
+                        const v1 = vEnd - dv * gapRatio;
+                        
+                        // 4 vértices do painel plano
+                        const pA = faceCenter.clone().addScaledVector(face.u, u0).addScaledVector(face.v, v0);
+                        const pB = faceCenter.clone().addScaledVector(face.u, u1).addScaledVector(face.v, v0);
+                        const pC = faceCenter.clone().addScaledVector(face.u, u1).addScaledVector(face.v, v1);
+                        const pD = faceCenter.clone().addScaledVector(face.u, u0).addScaledVector(face.v, v1);
+                        
+                        // Triângulo 1: A, B, C
+                        positions.push(pA.x, pA.y, pA.z);
+                        positions.push(pB.x, pB.y, pB.z);
+                        positions.push(pC.x, pC.y, pC.z);
+                        normals.push(face.normal.x, face.normal.y, face.normal.z);
+                        normals.push(face.normal.x, face.normal.y, face.normal.z);
+                        normals.push(face.normal.x, face.normal.y, face.normal.z);
+                        
+                        // Triângulo 2: A, C, D
+                        positions.push(pA.x, pA.y, pA.z);
+                        positions.push(pC.x, pC.y, pC.z);
+                        positions.push(pD.x, pD.y, pD.z);
+                        normals.push(face.normal.x, face.normal.y, face.normal.z);
+                        normals.push(face.normal.x, face.normal.y, face.normal.z);
+                        normals.push(face.normal.x, face.normal.y, face.normal.z);
+                        
+                        // 4 arestas de borda iluminada do painel
+                        linePositions.push(pA.x, pA.y, pA.z, pB.x, pB.y, pB.z);
+                        linePositions.push(pB.x, pB.y, pB.z, pC.x, pC.y, pC.z);
+                        linePositions.push(pC.x, pC.y, pC.z, pD.x, pD.y, pD.z);
+                        linePositions.push(pD.x, pD.y, pD.z, pA.x, pA.y, pA.z);
+                    }
+                }
+            }
+            
+            const panelGeo = new THREE.BufferGeometry();
+            panelGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            panelGeo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+            group.add(new THREE.Mesh(panelGeo, customMat || gaussianMaterial));
+            
+            const borderGeo = new THREE.BufferGeometry();
+            borderGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+            const borderMat = new THREE.LineBasicMaterial({
+                color: customBorderColor !== null ? customBorderColor : 0x93c5fd,
+                transparent: true,
+                opacity: customBorderColor !== null ? 0.35 : 0.75,
+                depthWrite: false
+            });
+            group.add(new THREE.LineSegments(borderGeo, borderMat));
+            
+            return group;
         }
 
         // --- CONSTRUTORES DE FORMAS ---
@@ -398,7 +1091,7 @@
             const radGauss = 3.5;
             
             mainGroup.add(new THREE.Mesh(new THREE.SphereGeometry(radCharge, 32, 32), chargeMaterial));
-            if (showGaussian) mainGroup.add(new THREE.Mesh(new THREE.SphereGeometry(radGauss, 32, 32), gaussianMaterial));
+            if (showGaussian) mainGroup.add(createSegmentedGaussianSphere(radGauss, 9, 16, 0.05));
             
             if (showField) {
                 const goldenRatio = (1 + Math.sqrt(5)) / 2;
@@ -417,45 +1110,114 @@
             const radGauss = 3.0;
             const heightGauss = 6.0;
             
-            mainGroup.add(new THREE.Mesh(new THREE.CylinderGeometry(radCharge, radCharge, 12, 32), chargeMaterial));
+            // O cilindro estende-se até tocar a esfera limite nos polos
+            const zCap = Math.sqrt(R_bound * R_bound - radCharge * radCharge);
+            const cylHeight = 2 * zCap;
+            
+            // Corpo do cilindro infinito (aberto nas pontas de encontro com o espaço)
+            const chargeGeo = new THREE.CylinderGeometry(radCharge, radCharge, cylHeight, 48, 1, true);
+            const chargeMesh = new THREE.Mesh(chargeGeo, chargeMaterial);
+            chargeMesh.rotation.x = Math.PI / 2;
+            mainGroup.add(chargeMesh);
+            
+            // Circunferências luminosas no topo e no fundo do espaço
+            function addCapCircumference(zPos) {
+                const pts = [];
+                for (let i = 0; i <= 64; i++) {
+                    const a = (i / 64) * Math.PI * 2;
+                    pts.push(new THREE.Vector3(radCharge * Math.cos(a), radCharge * Math.sin(a), zPos));
+                }
+                const line = new THREE.Line(
+                    new THREE.BufferGeometry().setFromPoints(pts),
+                    new THREE.LineBasicMaterial({ color: 0xff6b6b, linewidth: 2, transparent: true, opacity: 0.95 })
+                );
+                mainGroup.add(line);
+                
+                // Anel de brilho na circunferência
+                const ringGeo = new THREE.RingGeometry(radCharge - 0.08, radCharge + 0.08, 32);
+                const ringMat = new THREE.MeshBasicMaterial({ color: 0xef4444, side: THREE.DoubleSide, transparent: true, opacity: 0.7, depthWrite: false });
+                const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+                ringMesh.position.z = zPos;
+                mainGroup.add(ringMesh);
+            }
+            addCapCircumference(zCap);
+            addCapCircumference(-zCap);
             
             if (showGaussian) {
-                const gaussGeo = new THREE.CylinderGeometry(radGauss, radGauss, heightGauss, 32);
-                mainGroup.add(new THREE.Mesh(gaussGeo, gaussianMaterial));
-                mainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(gaussGeo), new THREE.LineBasicMaterial({ color: 0x60a5fa, opacity: 0.5, transparent: true })));
+                mainGroup.add(createSegmentedGaussianCylinder(radGauss, heightGauss, 5, 14, 2, 0.05));
             }
             
             if (showField) {
                 const arrowLength = (showGaussian ? radGauss : radGauss - 1.0) - radCharge;
-                for (let y = -2.0; y <= 2.0; y += 1.0) {
+                for (let z = -5.0; z <= 5.0; z += 1.25) {
                     for (let i = 0; i < 12; i++) {
                         const angle = (i / 12) * Math.PI * 2;
-                        const dir = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
-                        mainGroup.add(createArrow(dir, new THREE.Vector3(radCharge * Math.cos(angle), y, radCharge * Math.sin(angle)), arrowLength, 0xfca5a5));
+                        const dir = new THREE.Vector3(Math.cos(angle), Math.sin(angle), 0);
+                        mainGroup.add(createArrow(dir, new THREE.Vector3(radCharge * Math.cos(angle), radCharge * Math.sin(angle), z), arrowLength, 0xfca5a5));
                     }
                 }
             }
         }
 
         function buildPlaneScene() {
-            const planeSize = 10;
             const gaussRad = 2.0;
             const gaussHeight = 4.0;
             
-            mainGroup.add(new THREE.Mesh(new THREE.BoxGeometry(planeSize, 0.1, planeSize), chargeMaterial));
+            // Placa infinita em z = 0, estendendo-se até o horizonte da esfera
+            const planeGeo = new THREE.CylinderGeometry(R_bound, R_bound, 0.08, 64);
+            const planeMesh = new THREE.Mesh(planeGeo, chargeMaterial);
+            planeMesh.rotation.x = Math.PI / 2;
+            mainGroup.add(planeMesh);
+            
+            // Linha no horizonte da esfera que delimita o plano
+            const horizonPts = [];
+            for (let i = 0; i <= 128; i++) {
+                const a = (i / 128) * Math.PI * 2;
+                horizonPts.push(new THREE.Vector3(R_bound * Math.cos(a), R_bound * Math.sin(a), 0));
+            }
+            const horizonGeo = new THREE.BufferGeometry().setFromPoints(horizonPts);
+            const horizonLine = new THREE.Line(horizonGeo, new THREE.LineBasicMaterial({
+                color: 0xff6b6b,
+                linewidth: 2,
+                transparent: true,
+                opacity: 0.95
+            }));
+            mainGroup.add(horizonLine);
+
+            // Anel de brilho suave no horizonte
+            const horizonRingGeo = new THREE.RingGeometry(R_bound - 0.3, R_bound + 0.05, 64);
+            const horizonRingMat = new THREE.MeshBasicMaterial({
+                color: 0xef4444,
+                transparent: true,
+                opacity: 0.5,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            const horizonRing = new THREE.Mesh(horizonRingGeo, horizonRingMat);
+            mainGroup.add(horizonRing);
             
             if (showGaussian) {
-                const gaussGeo = new THREE.CylinderGeometry(gaussRad, gaussRad, gaussHeight, 32);
-                mainGroup.add(new THREE.Mesh(gaussGeo, gaussianMaterial));
-                mainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(gaussGeo), new THREE.LineBasicMaterial({ color: 0x60a5fa, opacity: 0.5, transparent: true })));
+                mainGroup.add(createSegmentedGaussianCylinder(gaussRad, gaussHeight, 3, 12, 2, 0.05));
             }
             
             if (showField) {
                 const arrowLength = (showGaussian ? gaussHeight / 2 : 1.5) - 0.05;
-                for (let x = -3; x <= 3; x+=1.5) {
-                    for (let z = -3; z <= 3; z+=1.5) {
-                        mainGroup.add(createArrow(new THREE.Vector3(0, 1, 0), new THREE.Vector3(x, 0.05, z), arrowLength, 0xfca5a5));
-                        mainGroup.add(createArrow(new THREE.Vector3(0, -1, 0), new THREE.Vector3(x, -0.05, z), arrowLength, 0xfca5a5));
+                // Flechas centrais
+                mainGroup.add(createArrow(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 0.04), arrowLength, 0xfca5a5));
+                mainGroup.add(createArrow(new THREE.Vector3(0, 0, -1), new THREE.Vector3(0, 0, -0.04), arrowLength, 0xfca5a5));
+                
+                // Distribuição circular de flechas cobrindo a placa
+                const rings = [1.5, 3.0, 4.8, 6.8];
+                const counts = [6, 12, 16, 20];
+                for (let rIdx = 0; rIdx < rings.length; rIdx++) {
+                    const r = rings[rIdx];
+                    const count = counts[rIdx];
+                    for (let i = 0; i < count; i++) {
+                        const a = (i / count) * Math.PI * 2;
+                        const x = r * Math.cos(a);
+                        const y = r * Math.sin(a);
+                        mainGroup.add(createArrow(new THREE.Vector3(0, 0, 1), new THREE.Vector3(x, y, 0.04), arrowLength, 0xfca5a5));
+                        mainGroup.add(createArrow(new THREE.Vector3(0, 0, -1), new THREE.Vector3(x, y, -0.04), arrowLength, 0xfca5a5));
                     }
                 }
             }
@@ -465,9 +1227,7 @@
             mainGroup.add(new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), chargeMaterial));
             
             if (showGaussian) {
-                const gaussGeo = new THREE.BoxGeometry(4, 4, 4);
-                mainGroup.add(new THREE.Mesh(gaussGeo, gaussianMaterial));
-                mainGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(gaussGeo), new THREE.LineBasicMaterial({ color: 0x60a5fa, opacity: 0.8 })));
+                mainGroup.add(createSegmentedGaussianCube(4.0, 4, 0.05));
             }
             
             if (showField) {
@@ -478,6 +1238,108 @@
                 ];
                 pts.forEach(p => mainGroup.add(createArrow(p.clone().normalize(), p.clone().normalize().multiplyScalar(1.5), (showGaussian ? p.length() - 1.5 : 1), 0xfca5a5)));
             }
+        }
+
+        // --- CÓPIA ROTACIONADA DO VOLUME E SUPERFÍCIE GAUSSIANA ---
+        function buildRotatedVolumeCopy(shape, showGauss) {
+            const group = new THREE.Group();
+
+            if (shape === 'sphere') {
+                const radCharge = 1.5;
+                const radGauss = 3.5;
+                
+                // Cópia da carga esférica em cinza translúcido suave
+                const sphereMesh = new THREE.Mesh(new THREE.SphereGeometry(radCharge, 32, 32), copyChargeMat);
+                group.add(sphereMesh);
+                
+                // Linhas de contorno discretas em cinza para evidenciar a rotação
+                const wire = new THREE.LineSegments(
+                    new THREE.WireframeGeometry(new THREE.SphereGeometry(radCharge, 16, 16)),
+                    new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.2, depthWrite: false })
+                );
+                group.add(wire);
+
+                // Cópia da superfície gaussiana esférica
+                if (showGauss) {
+                    group.add(createSegmentedGaussianSphere(radGauss, 9, 16, 0.05, copyGaussMat, copyBorderColor));
+                }
+            } else if (shape === 'cylinder') {
+                const radCharge = 1.0;
+                const radGauss = 3.0;
+                const heightGauss = 6.0;
+                const zCap = Math.sqrt(R_bound * R_bound - radCharge * radCharge);
+                const cylHeight = 2 * zCap;
+
+                // Cópia do fio/cilindro infinito
+                const chargeGeo = new THREE.CylinderGeometry(radCharge, radCharge, cylHeight, 48, 1, true);
+                const chargeMesh = new THREE.Mesh(chargeGeo, copyChargeMat);
+                chargeMesh.rotation.x = Math.PI / 2;
+                group.add(chargeMesh);
+
+                // Circunferências em cinza suave nas extremidades celestes
+                function addCopyCap(zPos) {
+                    const pts = [];
+                    for (let i = 0; i <= 64; i++) {
+                        const a = (i / 64) * Math.PI * 2;
+                        pts.push(new THREE.Vector3(radCharge * Math.cos(a), radCharge * Math.sin(a), zPos));
+                    }
+                    const line = new THREE.Line(
+                        new THREE.BufferGeometry().setFromPoints(pts),
+                        new THREE.LineBasicMaterial({ color: 0x94a3b8, linewidth: 1.5, transparent: true, opacity: 0.45 })
+                    );
+                    group.add(line);
+                }
+                addCopyCap(zCap);
+                addCopyCap(-zCap);
+
+                // Cópia da superfície gaussiana cilíndrica
+                if (showGauss) {
+                    group.add(createSegmentedGaussianCylinder(radGauss, heightGauss, 5, 14, 2, 0.05, copyGaussMat, copyBorderColor));
+                }
+            } else if (shape === 'plane') {
+                const gaussRad = 2.0;
+                const gaussHeight = 4.0;
+
+                // Cópia da placa infinita
+                const planeGeo = new THREE.CylinderGeometry(R_bound, R_bound, 0.08, 64);
+                const planeMesh = new THREE.Mesh(planeGeo, copyChargeMat);
+                planeMesh.rotation.x = Math.PI / 2;
+                group.add(planeMesh);
+
+                // Linha de horizonte cinza da cópia do plano
+                const horizonPts = [];
+                for (let i = 0; i <= 128; i++) {
+                    const a = (i / 128) * Math.PI * 2;
+                    horizonPts.push(new THREE.Vector3(R_bound * Math.cos(a), R_bound * Math.sin(a), 0));
+                }
+                const horizonLine = new THREE.Line(
+                    new THREE.BufferGeometry().setFromPoints(horizonPts),
+                    new THREE.LineBasicMaterial({ color: 0x94a3b8, linewidth: 1.5, transparent: true, opacity: 0.45 })
+                );
+                group.add(horizonLine);
+
+                // Cópia da superfície gaussiana (caixa de pílula)
+                if (showGauss) {
+                    group.add(createSegmentedGaussianCylinder(gaussRad, gaussHeight, 3, 12, 2, 0.05, copyGaussMat, copyBorderColor));
+                }
+            } else if (shape === 'cube') {
+                // Cópia do cubo carregado
+                const boxMesh = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), copyChargeMat);
+                group.add(boxMesh);
+
+                const wire = new THREE.LineSegments(
+                    new THREE.EdgesGeometry(new THREE.BoxGeometry(3, 3, 3)),
+                    new THREE.LineBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.35 })
+                );
+                group.add(wire);
+
+                // Cópia da superfície gaussiana cúbica
+                if (showGauss) {
+                    group.add(createSegmentedGaussianCube(4.0, 4, 0.05, copyGaussMat, copyBorderColor));
+                }
+            }
+
+            return group;
         }
 
         // --- SISTEMA DE VERIFICAÇÃO DE SIMETRIA DINÂMICA ---
@@ -505,10 +1367,45 @@
             
             let angleDeg = 0;
             let angleRad = 0;
+            const axisVec = new THREE.Vector3();
+
             if (symInfo.type === 'rot') {
                 angleContainer.classList.remove('hidden');
                 angleDeg = parseFloat(document.getElementById('rot-angle').value) || 0;
                 angleRad = angleDeg * Math.PI / 180;
+                
+                const angleValEl = document.getElementById('rot-angle-val');
+                if (angleValEl) angleValEl.textContent = `${Math.round(angleDeg)}°`;
+
+                if (symInfo.axis === 'x') axisVec.set(1, 0, 0);
+                if (symInfo.axis === 'y') axisVec.set(0, 1, 0);
+                if (symInfo.axis === 'z') axisVec.set(0, 0, 1);
+
+                const hintEl = document.getElementById('rot-axis-hint');
+                if (hintEl) {
+                    if (currentShape === 'sphere') {
+                        hintEl.innerHTML = '<span class="text-emerald-400 font-semibold">Simetria Esférica Total:</span> Invariante para rotação contínua em torno de qualquer eixo (X, Y ou Z).';
+                    } else if (currentShape === 'cylinder') {
+                        if (symInfo.axis === 'z') {
+                            hintEl.innerHTML = '<span class="text-emerald-400 font-semibold">Eixo Longitudinal (Z):</span> Invariante para qualquer ângulo θ (simetria cilíndrica axial contínua).';
+                        } else {
+                            hintEl.innerHTML = `<span class="text-amber-400 font-semibold">Eixo Transversal (${symInfo.axis.toUpperCase()}):</span> Simetria somente nos ângulos de <b>180° e 360°</b>. Para outros ângulos, o cilindro inclina-se no espaço.`;
+                        }
+                    } else if (currentShape === 'plane') {
+                        if (symInfo.axis === 'z') {
+                            hintEl.innerHTML = '<span class="text-emerald-400 font-semibold">Eixo Normal (Z):</span> Invariante para qualquer ângulo θ (simetria no plano XY contínua).';
+                        } else {
+                            hintEl.innerHTML = `<span class="text-amber-400 font-semibold">Eixo Coplanar (${symInfo.axis.toUpperCase()}):</span> Simetria somente nos ângulos de <b>180° e 360°</b>. Para outros ângulos, a placa inclina-se para fora de z = 0.`;
+                        }
+                    } else if (currentShape === 'cube') {
+                        hintEl.innerHTML = '<span class="text-sky-400 font-semibold">Simetria Discreta:</span> Invariante apenas em múltiplos de 90° (0°, 90°, 180°, 270°, 360°).';
+                    }
+                }
+
+                // Constrói e rotaciona a cópia do volume de carga e sua superfície gaussiana
+                const rotatedCopy = buildRotatedVolumeCopy(currentShape, showGaussian);
+                rotatedCopy.setRotationFromAxisAngle(axisVec, angleRad);
+                symmetryTestGroup.add(rotatedCopy);
             } else {
                 angleContainer.classList.add('hidden');
             }
@@ -531,13 +1428,6 @@
                 outOfBoundsMsg.classList.add('hidden');
             }
 
-            const isSymValidForShape = checkSymmetryValid(currentShape, symInfo.type, angleDeg);
-            if(isSymValidForShape) {
-                invalidMsg.classList.add('hidden');
-            } else {
-                invalidMsg.classList.remove('hidden');
-            }
-
             if (symInfo.type === 'refl') {
                 if (symmetryMode === 'refl_x') p2.set(-p1.x, p1.y, p1.z);
                 else if (symmetryMode === 'refl_y') p2.set(p1.x, -p1.y, p1.z);
@@ -547,25 +1437,42 @@
                 p2.set(-p1.x, -p1.y, -p1.z);
             } 
             else if (symInfo.type === 'rot') {
-                const axisVec = new THREE.Vector3();
-                if (symInfo.axis === 'x') axisVec.set(1, 0, 0);
-                if (symInfo.axis === 'y') axisVec.set(0, 1, 0);
-                if (symInfo.axis === 'z') axisVec.set(0, 0, 1);
                 p2.copy(p1).applyAxisAngle(axisVec, angleRad);
             }
 
             const isCoincident = p1.distanceTo(p2) < 0.001;
+            const isSymValidForShape = checkSymmetryValid(currentShape, symmetryMode, symInfo, angleDeg);
+
+            if(isSymValidForShape) {
+                invalidMsg.classList.add('hidden');
+            } else {
+                invalidMsg.classList.remove('hidden');
+                const invalidText = document.getElementById('sym-invalid-text');
+                if (invalidText) {
+                    if (currentShape === 'cylinder' && (symInfo.axis === 'x' || symInfo.axis === 'y')) {
+                        invalidText.textContent = `O cilindro possui simetria de rotação em torno do Eixo ${symInfo.axis.toUpperCase()} somente nos ângulos de 180° e 360°. Para ${Math.round(angleDeg)}°, o cilindro inclina-se no espaço e não coincide com a distribuição.`;
+                    } else if (currentShape === 'plane' && (symInfo.axis === 'x' || symInfo.axis === 'y')) {
+                        invalidText.textContent = `O plano possui simetria de rotação em torno do Eixo ${symInfo.axis.toUpperCase()} somente nos ângulos de 180° e 360°. Para ${Math.round(angleDeg)}°, a placa inclina-se para fora de z = 0 e não coincide com a distribuição.`;
+                    } else if (currentShape === 'cube') {
+                        invalidText.textContent = `O cubo possui apenas simetria rotacional discreta em múltiplos de 90° (0°, 90°, 180°, 270°, 360°). Para ${Math.round(angleDeg)}°, a distribuição não coincide.`;
+                    } else {
+                        invalidText.textContent = 'O objeto não possui simetria para este ângulo. Não há garantias de que o campo elétrico seja simétrico nesta posição.';
+                    }
+                }
+            }
 
             if (!isSymValidForShape) {
                 const matRed = new THREE.MeshBasicMaterial({ color: 0xef4444 });
-                const matGray = new THREE.MeshBasicMaterial({ color: 0x6b7280 });
-
                 const meshP1 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matRed); meshP1.position.copy(p1);
-                const meshP2 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matGray); meshP2.position.copy(p2);
-                symmetryTestGroup.add(meshP1); symmetryTestGroup.add(meshP2);
-
+                symmetryTestGroup.add(meshP1);
                 symmetryTestGroup.add(createArrow(p1.clone().normalize(), origin, p1.length(), 0xef4444, 0.4, 0.2));
-                symmetryTestGroup.add(createArrow(p2.clone().normalize(), origin, p2.length(), 0x6b7280, 0.4, 0.2));
+
+                if (!isCoincident) {
+                    const matGray = new THREE.MeshBasicMaterial({ color: 0x6b7280 });
+                    const meshP2 = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), matGray); meshP2.position.copy(p2);
+                    symmetryTestGroup.add(meshP2);
+                    symmetryTestGroup.add(createArrow(p2.clone().normalize(), origin, p2.length(), 0x6b7280, 0.4, 0.2));
+                }
             }
             else if (isCoincident) {
                 const matPurple = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
@@ -600,11 +1507,6 @@
                     symmetryTestGroup.add(midMarker);
                 } 
                 else if (symInfo.type === 'rot') {
-                    const axisVec = new THREE.Vector3();
-                    if (symInfo.axis === 'x') axisVec.set(1, 0, 0);
-                    if (symInfo.axis === 'y') axisVec.set(0, 1, 0);
-                    if (symInfo.axis === 'z') axisVec.set(0, 0, 1);
-
                     const arcPts = [];
                     for(let i=0; i<=50; i++) {
                         arcPts.push(p1.clone().applyAxisAngle(axisVec, angleRad * (i/50)));
@@ -668,12 +1570,12 @@
                 document.getElementById('vec-z').value = '0.0';
             } else if (shape === 'cylinder') {
                 document.getElementById('vec-x').value = '1.0';
-                document.getElementById('vec-y').value = '2.0';
-                document.getElementById('vec-z').value = '0.0';
+                document.getElementById('vec-y').value = '0.0';
+                document.getElementById('vec-z').value = '2.0';
             } else if (shape === 'plane') {
                 document.getElementById('vec-x').value = '2.0';
-                document.getElementById('vec-y').value = '0.0'; 
-                document.getElementById('vec-z').value = '2.0';
+                document.getElementById('vec-y').value = '2.0'; 
+                document.getElementById('vec-z').value = '0.0';
             } else if (shape === 'cube') {
                 document.getElementById('vec-x').value = '1.5';
                 document.getElementById('vec-y').value = '1.5';
@@ -701,13 +1603,107 @@
             updateUI(); 
         });
         
-        document.getElementById('toggle-axes').addEventListener('change', (e) => { showAxes = e.target.checked; updateReferencesVisibility(); });
-        document.getElementById('toggle-plane-x').addEventListener('change', (e) => { showPlaneX = e.target.checked; updateReferencesVisibility(); });
-        document.getElementById('toggle-plane-y').addEventListener('change', (e) => { showPlaneY = e.target.checked; updateReferencesVisibility(); });
-        document.getElementById('toggle-plane-z').addEventListener('change', (e) => { showPlaneZ = e.target.checked; updateReferencesVisibility(); });
+        // Configurações visuais dos botões de alternância (Toggle Buttons)
+        const toggleThemes = {
+            blue: {
+                activeBorder: 'border-blue-500/50',
+                activeBg: 'bg-blue-950/30',
+                activeSwitch: 'bg-blue-600',
+                activeText: 'text-blue-400'
+            },
+            red: {
+                activeBorder: 'border-red-500/50',
+                activeBg: 'bg-red-950/30',
+                activeSwitch: 'bg-red-600',
+                activeText: 'text-red-400'
+            },
+            green: {
+                activeBorder: 'border-green-500/50',
+                activeBg: 'bg-green-950/30',
+                activeSwitch: 'bg-green-600',
+                activeText: 'text-green-400'
+            },
+            indigo: {
+                activeBorder: 'border-indigo-500/50',
+                activeBg: 'bg-indigo-950/30',
+                activeSwitch: 'bg-indigo-600',
+                activeText: 'text-indigo-400'
+            }
+        };
+
+        function updateToggleUI(id, active, themeKey) {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            const theme = toggleThemes[themeKey] || toggleThemes.blue;
+            btn.setAttribute('aria-checked', active ? 'true' : 'false');
+            
+            const statusEl = btn.querySelector('.toggle-status');
+            const switchEl = btn.querySelector('.toggle-switch');
+            const pinEl = btn.querySelector('.toggle-pin');
+
+            if (active) {
+                btn.className = `toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border ${theme.activeBorder} ${theme.activeBg} hover:bg-slate-700/60 text-left`;
+                if (statusEl) {
+                    statusEl.textContent = 'ATIVO';
+                    statusEl.className = `toggle-status text-[10px] font-bold uppercase tracking-wider ${theme.activeText}`;
+                }
+                if (switchEl) {
+                    switchEl.className = `toggle-switch w-8 h-4 rounded-full ${theme.activeSwitch} relative transition-colors`;
+                }
+                if (pinEl) {
+                    pinEl.className = 'toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 right-0.5 transition-all shadow-sm';
+                }
+            } else {
+                btn.className = 'toggle-btn w-full flex items-center justify-between p-2.5 rounded-lg border border-slate-700 bg-slate-800/40 hover:bg-slate-700/60 text-left';
+                if (statusEl) {
+                    statusEl.textContent = 'OCULTO';
+                    statusEl.className = 'toggle-status text-[10px] font-bold uppercase tracking-wider text-slate-400';
+                }
+                if (switchEl) {
+                    switchEl.className = 'toggle-switch w-8 h-4 rounded-full bg-slate-600 relative transition-colors';
+                }
+                if (pinEl) {
+                    pinEl.className = 'toggle-pin w-3 h-3 rounded-full bg-white absolute top-0.5 left-0.5 transition-all shadow-sm';
+                }
+            }
+        }
+
+        // Listeners de clique para os toggles
+        document.getElementById('toggle-axes').addEventListener('click', () => {
+            showAxes = !showAxes;
+            updateToggleUI('toggle-axes', showAxes, 'indigo');
+            updateReferencesVisibility();
+        });
+
+        document.getElementById('toggle-plane-x').addEventListener('click', () => {
+            showPlaneX = !showPlaneX;
+            updateToggleUI('toggle-plane-x', showPlaneX, 'red');
+            updateReferencesVisibility();
+        });
+
+        document.getElementById('toggle-plane-y').addEventListener('click', () => {
+            showPlaneY = !showPlaneY;
+            updateToggleUI('toggle-plane-y', showPlaneY, 'green');
+            updateReferencesVisibility();
+        });
+
+        document.getElementById('toggle-plane-z').addEventListener('click', () => {
+            showPlaneZ = !showPlaneZ;
+            updateToggleUI('toggle-plane-z', showPlaneZ, 'blue');
+            updateReferencesVisibility();
+        });
         
-        document.getElementById('toggle-gaussian').addEventListener('change', (e) => { showGaussian = e.target.checked; updateScene(); });
-        document.getElementById('toggle-field').addEventListener('change', (e) => { showField = e.target.checked; updateScene(); });
+        document.getElementById('toggle-gaussian').addEventListener('click', () => {
+            showGaussian = !showGaussian;
+            updateToggleUI('toggle-gaussian', showGaussian, 'blue');
+            updateScene();
+        });
+
+        document.getElementById('toggle-field').addEventListener('click', () => {
+            showField = !showField;
+            updateToggleUI('toggle-field', showField, 'red');
+            updateScene();
+        });
         
         document.getElementById('symmetry-mode').addEventListener('change', (e) => { symmetryMode = e.target.value; updateScene(); });
 
@@ -715,6 +1711,17 @@
         document.getElementById('vec-y').addEventListener('input', updateScene);
         document.getElementById('vec-z').addEventListener('input', updateScene);
         document.getElementById('rot-angle').addEventListener('input', updateScene);
+
+        document.querySelectorAll('.preset-angle-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const angle = e.currentTarget.getAttribute('data-angle');
+                const slider = document.getElementById('rot-angle');
+                if (slider) {
+                    slider.value = angle;
+                    slider.dispatchEvent(new Event('input'));
+                }
+            });
+        });
 
         window.addEventListener('resize', () => {
             let width = window.innerWidth;
@@ -733,6 +1740,14 @@
         }
 
         // Inicialização
+        buildBoundarySphere();
+        updateToggleUI('toggle-gaussian', showGaussian, 'blue');
+        updateToggleUI('toggle-field', showField, 'red');
+        updateToggleUI('toggle-axes', showAxes, 'indigo');
+        updateToggleUI('toggle-plane-x', showPlaneX, 'red');
+        updateToggleUI('toggle-plane-y', showPlaneY, 'green');
+        updateToggleUI('toggle-plane-z', showPlaneZ, 'blue');
+
         updateReferencesVisibility();
         updateSymmetryDropdown(currentShape);
         updateScene();
