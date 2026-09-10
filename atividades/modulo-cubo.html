@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 5: O Cubo Carregado - Atividades de Fixação</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax 3 -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Estilos das Atividades -->
+    <link rel="stylesheet" href="../css/atividades.css">
+</head>
+<body class="selection:bg-red-500/30 selection:text-red-200">
+
+    <!-- Barra de Progresso Superior -->
+    <div id="module-progress-bar"></div>
+
+    <!-- Header Fixo -->
+    <header class="activity-topbar px-4 sm:px-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="flex items-center gap-2 text-slate-300 hover:text-red-400 transition font-medium text-xs sm:text-sm py-1.5 px-2.5 sm:px-3 rounded-lg hover:bg-slate-800 border border-slate-700/60">
+                <span>←</span>
+                <span>Hub de Atividades</span>
+            </a>
+            <div class="hidden md:block h-5 w-px bg-slate-700/80"></div>
+            <a href="../guia.html#sec-2-4" class="hidden md:flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 transition py-1.5 px-2 rounded hover:bg-red-950/40">
+                <span>📖</span> Revisar Teoria no Guia
+            </a>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-4">
+            <div class="text-right">
+                <span id="stat-answered-count" class="text-[11px] sm:text-xs font-bold text-slate-200 block">0 de 4 questões</span>
+                <span id="stat-score-pct" class="text-[10px] text-emerald-400">0% de acerto</span>
+            </div>
+            <button type="button" id="btn-reset-module" class="p-1.5 sm:p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition text-xs border border-slate-700" title="Reiniciar Módulo">
+                🔄
+            </button>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+        
+        <!-- Cabeçalho do Módulo -->
+        <div class="mb-8 pb-6 border-b border-slate-800">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/80 border border-red-600/50 text-red-300 text-xs font-semibold mb-3">
+                <span>📦</span> Módulo 5 • Contraponto & Limites
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">
+                O Cubo Carregado & O Limite da Lei de Gauss
+            </h1>
+            <p class="text-sm text-slate-300 leading-relaxed">
+                Desmistifique o mito de que a Lei de Gauss falha no cubo e compreenda a diferença entre a validade física de uma lei universal e sua solubilidade analítica.
+            </p>
+        </div>
+
+        <!-- Container do Quiz (Renderizado Dinamicamente) -->
+        <div id="quiz-container"></div>
+
+        <!-- Navegação Inferior -->
+        <div class="mt-12 pt-8 border-t border-slate-800 flex items-center justify-between flex-wrap gap-4">
+            <a href="modulo-plano.html" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
+                ← Módulo Anterior: Placa Plana
+            </a>
+            <a href="index.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs hover:from-purple-500 hover:to-indigo-500 transition shadow-lg shadow-purple-600/20">
+                <span>Concluir e Ir para o Hub Geral</span>
+                <span>✓</span>
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/atividades/quizEngine.js"></script>
+    <script src="../js/atividades/data/questionsCubo.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            GaussApp.Quiz.initModule('cubo', GaussApp.QuizData.cubo);
+        });
+    </script>
+</body>
+</html>

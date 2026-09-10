@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Teórico: Simetria & Lei de Gauss (Física 3)</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax 3 para fórmulas de Física e Geometria -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Estilos do Guia -->
+    <link rel="stylesheet" href="css/guia-page.css">
+</head>
+<body class="bg-[#090d16] text-slate-200 antialiased selection:bg-sky-500/30 selection:text-sky-200">
+
+    <!-- Barra de Progresso de Leitura Superior -->
+    <div id="read-progress-bar"></div>
+
+    <!-- Backdrop escuro para navegação mobile -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+    <!-- Header Fixo de Navegação Superior -->
+    <header class="guide-topbar px-4 lg:px-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <!-- Botão Hambúrguer para Mobile -->
+            <button type="button" id="btn-toggle-sidebar" class="lg:hidden p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white" aria-label="Abrir Índice">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+
+            <a href="index.html" class="flex items-center gap-2 text-slate-300 hover:text-sky-400 transition font-medium text-sm py-1.5 px-3 rounded-lg hover:bg-slate-800/80 border border-slate-700/60 group">
+                <span class="text-sky-400 group-hover:-translate-x-0.5 transition-transform">←</span>
+                <span>Voltar ao Laboratório 3D</span>
+            </a>
+
+            <div class="hidden sm:block h-5 w-px bg-slate-700/80 mx-1"></div>
+
+            <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>Eletromagnetismo & Simetrias (Física 3)</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+            <a href="atividades/index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg bg-purple-950/80 hover:bg-purple-900 border border-purple-600/50 text-purple-300 transition">
+                <span>✍</span>
+                <span class="hidden sm:inline">Atividades de Fixação</span>
+            </a>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-950/80 border border-sky-600/50 text-sky-300">
+                Guia Acadêmico
+            </span>
+        </div>
+    </header>
+
+    <!-- Layout Principal: Sidebar + Conteúdo -->
+    <div class="max-w-[1440px] mx-auto flex">
+        
+        <!-- SIDEBAR DE NAVEGAÇÃO HIERÁRQUICA COM SCROLLSPY -->
+        <aside class="guide-sidebar p-5 border-r border-slate-800/80 shrink-0 bg-[#090d16]/95 lg:bg-transparent">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span class="text-base">📑</span>
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Índice do Conteúdo</h2>
+                </div>
+                <!-- Botão fechar para telas mobile -->
+                <button type="button" id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-white p-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="space-y-4" aria-label="Sumário da Teoria">
+                <!-- Bloco Parte 1 -->
+                <div>
+                    <span class="text-[11px] font-bold text-sky-400 uppercase tracking-wider block mb-1.5 px-2">
+                        Parte 1: Fundamentos & Simetrias
+                    </span>
+                    <ul class="space-y-0.5">
+                        <li><a href="#sec-1-1" class="toc-link">1.1 Conceito de Simetria</a></li>
+                        <li><a href="#sec-1-2" class="toc-link">1.2 O Princípio de Curie</a></li>
+                        <li>
+                            <a href="#sec-1-3" class="toc-link">1.3 As 4 Simetrias Fundamentais</a>
+                            <ul class="space-y-0.5 mt-0.5">
+                                <li><a href="#sec-1-3-1" class="toc-sublink">1.3.1 Rotação Contínua e Discreta</a></li>
+                                <li><a href="#sec-1-3-2" class="toc-sublink">1.3.2 Translação Espacial</a></li>
+                                <li><a href="#sec-1-3-3" class="toc-sublink">1.3.3 Reflexão Especular</a></li>
+                                <li><a href="#sec-1-3-4" class="toc-sublink">1.3.4 Inversão Espacial</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#sec-1-4" class="toc-link">1.4 Redução dos Graus de Liberdade</a></li>
+                        <li><a href="#sec-1-5" class="toc-link">1.5 A Lei de Gauss & Solubilidade</a></li>
+                    </ul>
+                </div>
+
+                <!-- Bloco Parte 2 -->
+                <div class="pt-2 border-t border-slate-800/80">
+                    <span class="text-[11px] font-bold text-fuchsia-400 uppercase tracking-wider block mb-1.5 px-2">
+                        Parte 2: Objetos & Cálculos
+                    </span>
+                    <ul class="space-y-0.5">
+                        <li>
+                            <a href="#sec-2-1" class="toc-link">2.1 A Carga Esférica ($O(3)$)</a>
+                            <ul class="space-y-0.5 mt-0.5">
+                                <li><a href="#sec-2-1-1" class="toc-sublink">2.1.1 Análise de Simetria</a></li>
+                                <li><a href="#sec-2-1-2" class="toc-sublink">2.1.2 Direção Radial de $\vec{E}$</a></li>
+                                <li><a href="#sec-2-1-3" class="toc-sublink">2.1.3 Superfície Esférica</a></li>
+                                <li><a href="#sec-2-1-4" class="toc-sublink">2.1.4 Dedução Passo a Passo</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#sec-2-2" class="toc-link">2.2 O Fio / Cilindro Longo</a>
+                            <ul class="space-y-0.5 mt-0.5">
+                                <li><a href="#sec-2-2-1" class="toc-sublink">2.2.1 Análise de Simetria</a></li>
+                                <li><a href="#sec-2-2-2" class="toc-sublink">2.2.2 Direção Radial Cilíndrica</a></li>
+                                <li><a href="#sec-2-2-3" class="toc-sublink">2.2.3 Gaussiana e Tampas</a></li>
+                                <li><a href="#sec-2-2-4" class="toc-sublink">2.2.4 Dedução Passo a Passo</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#sec-2-3" class="toc-link">2.3 A Placa Plana Infinita</a>
+                            <ul class="space-y-0.5 mt-0.5">
+                                <li><a href="#sec-2-3-1" class="toc-sublink">2.3.1 Análise de Simetria</a></li>
+                                <li><a href="#sec-2-3-2" class="toc-sublink">2.3.2 Campo Normal Bilateral</a></li>
+                                <li><a href="#sec-2-3-3" class="toc-sublink">2.3.3 Caixa de Pílula (Pillbox)</a></li>
+                                <li><a href="#sec-2-3-4" class="toc-sublink">2.3.4 Dedução Passo a Passo</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#sec-2-4" class="toc-link">2.4 O Cubo Carregado (Contraponto)</a>
+                            <ul class="space-y-0.5 mt-0.5">
+                                <li><a href="#sec-2-4-1" class="toc-sublink">2.4.1 Grupo de Simetria $O_h$</a></li>
+                                <li><a href="#sec-2-4-2" class="toc-sublink">2.4.2 Validade da Lei de Gauss</a></li>
+                                <li><a href="#sec-2-4-3" class="toc-sublink">2.4.3 Quebra dos Critérios</a></li>
+                                <li><a href="#sec-2-4-4" class="toc-sublink">2.4.4 Conclusão Pedagógica</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- ÁREA CENTRAL DE CONTEÚDO E DEDUÇÕES -->
+        <main class="flex-1 px-4 sm:px-8 lg:px-14 py-10 max-w-4xl min-w-0">
+            
+            <!-- Hero / Introdução -->
+            <div class="mb-12 pb-8 border-b border-slate-800">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-sky-300 mb-4">
+                    <span>⚡</span> Livro Didático Interativo
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-4">
+                    Simetria & A Lei de Gauss em Eletromagnetismo
+                </h1>
+                <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+                    Um guia teórico rigoroso em nível de Física 3 universitária. Descubra como princípios geométricos de invariância e o Princípio de Curie reduzem equações diferenciais insolúveis a integrações elementares de fluxo.
+                </p>
+            </div>
+
+            <!-- =============================================================
+                 PARTE 1: FUNDAMENTOS & TEORIA DAS SIMETRIAS
+                 ============================================================= -->
+            <section class="mb-16">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs font-bold uppercase tracking-widest text-sky-400 bg-sky-950/80 px-2.5 py-0.5 rounded border border-sky-800/60">
+                        PARTE 1
+                    </span>
+                    <span class="text-xs text-slate-500 font-medium">Fundamentos Teóricos</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-6">
+                    Fundamentos & Teoria das Simetrias
+                </h2>
+
+                <!-- 1.1 O Conceito de Simetria em Eletrostática -->
+                <article id="sec-1-1" class="mb-12 pt-4">
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 flex items-center gap-2">
+                        <span class="text-sky-400">1.1</span> O Conceito de Simetria em Eletrostática
+                    </h3>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Em física teórica, uma <b>simetria</b> é uma transformação que deixa inalterada uma determinada propriedade de um sistema. No contexto da eletrostática clássica, consideremos uma distribuição contínua de cargas estáticas no espaço euclidiano $\mathbb{R}^3$, caracterizada por sua função densidade volumétrica de carga $\rho(\vec{r})$.
+                    </p>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Dizemos que uma transformação isométrica espacial $T: \mathbb{R}^3 \to \mathbb{R}^3$ (como uma rotação, translação, reflexão ou inversão) é uma <b>operação de simetria</b> da distribuição de cargas se e somente se a densidade de carga em cada ponto transformado $T\vec{r}$ for rigorosamente idêntica à densidade original:
+                    </p>
+
+                    <div class="math-display-card text-center">
+                        $$\rho(T\vec{r}) = \rho(\vec{r}), \quad \forall \, \vec{r} \in \mathbb{R}^3$$
+                    </div>
+
+                    <p class="text-slate-300 leading-relaxed">
+                        A simetria não é um mero recurso estético: ela constitui a ferramenta analítica mais poderosa da física. Ela nos permite saber de antemão a direção e o comportamento de grandezas físicas complexas mesmo antes de resolver qualquer integral ou equação diferencial.
+                    </p>
+                </article>
+
+                <!-- 1.2 O Princípio de Curie (1894) -->
+                <article id="sec-1-2" class="mb-12 pt-4">
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 flex items-center gap-2">
+                        <span class="text-sky-400">1.2</span> O Princípio de Curie (1894)
+                    </h3>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Em 1894, o físico francês Pierre Curie formulou um dos princípios mais elegantes e abrangentes da física moderna, que relaciona a geometria das causas à geometria dos efeitos:
+                    </p>
+
+                    <div class="callout callout-curie">
+                        <div class="flex items-center gap-2 mb-2 font-bold text-purple-200 text-sm">
+                            <span>⚜</span> Enunciado do Princípio de Curie (1894)
+                        </div>
+                        <p class="italic text-slate-200 mb-3">
+                            "Quando certos efeitos revelam uma dada assimetria, essa mesma assimetria deve encontrar-se nas causas que lhe deram origem. As assimetrias dos efeitos provêm das causas."
+                        </p>
+                        <p class="text-xs text-purple-200/90 leading-relaxed">
+                            Em outros termos: <b>Os efeitos físicos não podem ser menos simétricos do que as causas que os produziram.</b> Se uma causa possui um determinado grupo de simetrias, o efeito gerado deve possuir, no mínimo, essas mesmas simetrias.
+                        </p>
+                    </div>
+
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Na eletrostática, a <b>causa</b> é a distribuição de cargas $\rho(\vec{r})$ e o <b>efeito</b> é o campo elétrico resultante $\vec{E}(\vec{r})$. Como o espaço vazio é homogêneo e isotrópico e as leis fundamentais do eletromagnetismo (as equações de Maxwell) são espacialmente invariantes, o Princípio de Curie impõe que o vetor campo elétrico se transforme de maneira covariante sob qualquer operação de simetria $T$ do sistema:
+                    </p>
+
+                    <div class="math-display-card text-center">
+                        $$T\vec{E}(\vec{r}) = \vec{E}(T\vec{r})$$
+                    </div>
+
+                    <p class="text-slate-300 leading-relaxed">
+                        Isso significa que, se girarmos ou refletirmos o sistema e a distribuição de cargas não mudar, o campo elétrico $\vec{E}$ transformado deve coincidir perfeitamente com o campo original naquele ponto!
+                    </p>
+                </article>
+
+                <!-- 1.3 As 4 Simetrias Espaciais Fundamentais -->
+                <article id="sec-1-3" class="mb-12 pt-4">
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 flex items-center gap-2">
+                        <span class="text-sky-400">1.3</span> As 4 Simetrias Espaciais Fundamentais
+                    </h3>
+                    <p class="text-slate-300 leading-relaxed mb-6">
+                        No espaço tridimensional $\mathbb{R}^3$, qualquer isometria (transformação que preserva distâncias euclidianas) pode ser decomposta a partir de quatro classes fundamentais de transformações geométricas:
+                    </p>
+
+                    <!-- 1.3.1 Rotação -->
+                    <div id="sec-1-3-1" class="step-item mb-8" data-step="A">
+                        <h4 class="text-base font-bold text-white mb-2">
+                            1.3.1 Simetria de Rotação (Contínua vs. Discreta)
+                        </h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                            Consiste na invariância após uma rotação por um ângulo $\theta$ em torno de um eixo orientado por um versor unitário $\hat{n}$.
+                        </p>
+                        <div class="grid sm:grid-cols-2 gap-3 mb-3 text-xs">
+                            <div class="p-3 rounded-lg bg-slate-900/70 border border-slate-700/60">
+                                <b class="text-sky-300 block mb-1 text-sm">Rotação Contínua $SO(2)$ ou $SO(3)$</b>
+                                Válida para <i>qualquer</i> ângulo real contínuo $\theta \in [0, 2\pi)$. Exemplo: rotação em torno do eixo de um cilindro infinito ou em torno de qualquer diâmetro de uma esfera.
+                            </div>
+                            <div class="p-3 rounded-lg bg-slate-900/70 border border-slate-700/60">
+                                <b class="text-purple-300 block mb-1 text-sm">Rotação Discreta $C_n$</b>
+                                Válida apenas para múltiplos inteiros de um ângulo finito $\theta = 2\pi / n$. Exemplo: um cubo centrado na origem só é invariante sob rotações de $90^\circ, 180^\circ, 270^\circ$ e $360^\circ$ em torno de seus eixos de simetria.
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">
+                            <b>Impacto no Campo:</b> A simetria de rotação contínua em torno de um eixo (ex: eixo $Z$) elimina a dependência do ângulo azimutal $\phi$ e anula obrigatoriamente a componente azimutal do campo: $E_\phi = 0$.
+                        </p>
+                    </div>
+
+                    <!-- 1.3.2 Translação -->
+                    <div id="sec-1-3-2" class="step-item mb-8" data-step="B">
+                        <h4 class="text-base font-bold text-white mb-2">
+                            1.3.2 Simetria de Translação Espacial
+                        </h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Consiste na invariância ao deslocar todo o sistema por um vetor arbitrário $\vec{s} = \Delta s \, \hat{u}$ paralelamente a uma reta ou plano:
+                        </p>
+                        <div class="math-display-card text-center text-xs py-2 my-2">
+                            $$\vec{r} \to \vec{r} + \Delta s \, \hat{u} \implies \frac{\partial \vec{E}}{\partial s} = \vec{0}$$
+                        </div>
+                        <div class="callout callout-warning my-3 text-xs">
+                            <b class="text-amber-300 block mb-0.5">Nota Crucial sobre Limites Físicos:</b>
+                            A simetria de translação contínua só pode ser rigorosamente exata em <b>distribuições infinitas</b> (como um fio infinitamente longo ou uma placa infinita). Corpos finitos localizados no espaço (como esferas e cubos reais) quebram a simetria de translação, pois as bordas ou o centro definem posições preferenciais no espaço.
+                        </div>
+                    </div>
+
+                    <!-- 1.3.3 Reflexão Especular -->
+                    <div id="sec-1-3-3" class="step-item mb-8" data-step="C">
+                        <h4 class="text-base font-bold text-white mb-2">
+                            1.3.3 Simetria de Reflexão Especular (Planos Espelho)
+                        </h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                            Consiste na invariância sob reflexão em relação a um plano geométrico $M$ com versor normal $\hat{m}$.
+                        </p>
+                        <p class="text-slate-300 text-xs leading-relaxed mb-2">
+                            Como o campo elétrico $\vec{E}$ é um <b>vetor polar verdadeiro</b> (e não um pseudovetor), sob reflexão especular suas componentes paralelas ao plano espelho permanecem invariantes, enquanto a componente normal inverte de sinal:
+                        </p>
+                        <div class="math-display-card text-center text-xs py-2 my-2">
+                            $$E_{\parallel}' = E_{\parallel}, \quad E_{\perp}' = -E_{\perp}$$
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">
+                            <b>Condição de Contorno sobre o Plano:</b> Em pontos pertencentes ao próprio plano de simetria espelho, o campo elétrico deve coincidir com o refletido ($E_{\perp} = -E_{\perp} \implies E_{\perp} = 0$). Ou seja, <i>sobre o plano de simetria, o campo elétrico resultante não pode ter componente normal ao plano!</i>
+                        </p>
+                    </div>
+
+                    <!-- 1.3.4 Inversão Espacial -->
+                    <div id="sec-1-3-4" class="step-item" data-step="D">
+                        <h4 class="text-base font-bold text-white mb-2">
+                            1.3.4 Simetria de Inversão Espacial (Paridade)
+                        </h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Consiste na reflexão pontual através da origem de coordenadas: $\vec{r} \to -\vec{r}$ (em cartesianas: $x \to -x, y \to -y, z \to -z$).
+                        </p>
+                        <p class="text-slate-300 text-xs leading-relaxed mb-2">
+                            Vetores polares invertem de sentido sob paridade: $\vec{E}(-\vec{r}) = -\vec{E}(\vec{r})$. Se uma distribuição de carga possui centro de simetria na origem ($\rho(-\vec{r}) = \rho(\vec{r})$), o campo elétrico na origem deve satisfazer:
+                        </p>
+                        <div class="math-display-card text-center text-xs py-2 my-2">
+                            $$\vec{E}(\vec{0}) = -\vec{E}(\vec{0}) \implies \vec{E}(\vec{0}) = \vec{0}$$
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">
+                            Portanto, no centro de simetria de qualquer corpo que possua paridade de inversão (como o centro de uma esfera uniforme ou o centro de um cubo condutor carregado), o campo elétrico anula-se estritamente!
+                        </p>
+                    </div>
+                </article>
+
+                <!-- 1.4 Redução dos Graus de Liberdade de E -->
+                <article id="sec-1-4" class="mb-12 pt-4">
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 flex items-center gap-2">
+                        <span class="text-sky-400">1.4</span> Redução dos Graus de Liberdade de $\vec{E}$
+                    </h3>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Sem considerações de simetria, determinar o campo elétrico em um ponto arbitrário do espaço exige encontrar <b>3 funções escalares desconhecidas</b> dependentes de <b>3 coordenadas espaciais</b>:
+                    </p>
+
+                    <div class="math-display-card text-center">
+                        $$\vec{E}(x, y, z) = E_x(x,y,z)\,\hat{i} + E_y(x,y,z)\,\hat{j} + E_z(x,y,z)\,\hat{k}$$
+                    </div>
+
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        Isso corresponderia a 9 graus de liberdade funcionais. A aplicação progressiva das simetrias corta drasticamente essa complexidade matemática:
+                    </p>
+
+                    <!-- Tabela Sintética Comparativa -->
+                    <div class="overflow-x-auto">
+                        <table class="tech-table">
+                            <thead>
+                                <tr>
+                                    <th>Operação de Simetria</th>
+                                    <th>Invariância Geométrica</th>
+                                    <th>Grau de Liberdade Eliminado em $\vec{E}$</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-semibold text-sky-300">Translação ao longo de $Z$</td>
+                                    <td>$\vec{r} \to \vec{r} + \Delta z\,\hat{k}$</td>
+                                    <td>Elimina dependência de $z$: $\vec{E} = \vec{E}(x, y)$</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold text-sky-300">Rotação em torno de $Z$</td>
+                                    <td>$\phi \to \phi + \Delta\phi$</td>
+                                    <td>Anula componente circular $E_\phi = 0$ e elimina dependência de $\phi$</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold text-sky-300">Reflexão em planos transversais</td>
+                                    <td>$z \to -z$</td>
+                                    <td>Anula componente longitudinal $E_z = 0$</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold text-sky-300">Rotação isotrópica total ($O(3)$)</td>
+                                    <td>Qualquer eixo pela origem</td>
+                                    <td>Anula $E_\theta = 0, E_\phi = 0$; campo é puramente unidimensional: $\vec{E} = E(r)\,\hat{r}$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <!-- 1.5 A Lei de Gauss & Critérios de Solubilidade Analítica -->
+                <article id="sec-1-5" class="mb-12 pt-4">
+                    <h3 class="text-xl font-bold text-slate-100 mb-3 flex items-center gap-2">
+                        <span class="text-sky-400">1.5</span> A Lei de Gauss & Critérios de Solubilidade Analítica
+                    </h3>
+                    <p class="text-slate-300 leading-relaxed mb-4">
+                        A Primeira Equação de Maxwell na forma integral (a <b>Lei de Gauss</b>) relaciona o fluxo elétrico total através de uma superfície imaginária fechada $S$ com a carga interna líquida $Q_{\text{int}}$ envolvida:
+                    </p>
+
+                    <div class="math-display-card text-center">
+                        $$\Phi_E = \oint_S \vec{E} \cdot d\vec{A} = \frac{Q_{\text{int}}}{\varepsilon_0}$$
+                    </div>
+
+                    <div class="callout callout-warning">
+                        <div class="font-bold text-amber-300 mb-1 flex items-center gap-2">
+                            <span>⚠</span> Lei Física Universal $\neq$ Técnica de Cálculo Analítico
+                        </div>
+                        <p class="text-xs text-amber-200/90 leading-relaxed">
+                            A Lei de Gauss é <b>sempre verdadeira</b> para qualquer superfície fechada imaginária na eletrostática clássica. Entretanto, ela só nos permite <b>calcular a magnitude do campo elétrico</b> se formos capazes de colocar $|\vec{E}|$ em evidência e retirá-lo para fora do sinal da integral!
+                        </p>
+                    </div>
+
+                    <p class="text-slate-300 leading-relaxed mb-3">
+                        Para que o termo $|\vec{E}|$ saia da integral, a superfície imaginária de Gauss $S$ deve satisfazer estritamente a <b>dois critérios fundamentais</b>:
+                    </p>
+
+                    <div class="grid sm:grid-cols-2 gap-4 my-4 text-xs">
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-sky-500/30">
+                            <span class="text-sky-400 font-bold uppercase tracking-wider block mb-1">Critério 1: Ortogonalidade ou Paralelismo</span>
+                            Em cada elemento da superfície, o vetor $\vec{E}$ deve ser ou perfeitamente <b>paralelo</b> ao vetor de área ($\vec{E} \parallel d\vec{A} \implies \vec{E}\cdot d\vec{A} = E\,dA$) ou perfeitamente <b>perpendicular</b> ($\vec{E} \perp d\vec{A} \implies \vec{E}\cdot d\vec{A} = 0$).
+                        </div>
+                        <div class="p-3.5 rounded-xl bg-slate-900 border border-emerald-500/30">
+                            <span class="text-emerald-400 font-bold uppercase tracking-wider block mb-1">Critério 2: Magnitude Constante</span>
+                            Em toda a região da superfície onde o fluxo não for nulo ($\vec{E} \parallel d\vec{A}$), a magnitude $|\vec{E}|$ deve ser estritamente <b>uniforme e constante</b> ao longo de toda a área.
+                        </div>
+                    </div>
+
+                    <p class="text-slate-300 leading-relaxed">
+                        Satisfeitas essas duas condições, a integral do produto escalar converte-se em uma multiplicação algébrica trivial:
+                    </p>
+
+                    <div class="math-display-card text-center">
+                        $$\oint_S \vec{E} \cdot d\vec{A} = E \oint_{S_{\text{ativo}}} dA = E \cdot A_{\text{ativo}} = \frac{Q_{\text{int}}}{\varepsilon_0} \implies E = \frac{Q_{\text{int}}}{\varepsilon_0 A_{\text{ativo}}}$$
+                    </div>
+
+                    <!-- Card de Transição para Atividades de Fixação do Módulo 1 -->
+                    <div class="mt-8 p-4 rounded-xl bg-gradient-to-r from-sky-950/40 via-purple-950/30 to-slate-900 border border-sky-500/40 flex items-center justify-between gap-4 flex-wrap">
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-sky-400 block mb-0.5">Atividades Práticas</span>
+                            <h4 class="text-sm font-bold text-white">Praticar Desafios do Módulo 1: Simetrias & Curie</h4>
+                            <p class="text-xs text-slate-400">Predição de vetores simétricos $\vec{r} \to \vec{r}'$, teste de paridade e redução de variáveis no 3D.</p>
+                        </div>
+                        <a href="atividades/modulo-simetrias.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition shadow-lg shadow-sky-600/30">
+                            <span>✍ Resolver Atividades</span>
+                            <span>→</span>
+                        </a>
+                    </div>
+                </article>
+            </section>
+
+            <!-- =============================================================
+                 PARTE 2: OBJETOS & CÁLCULO DO CAMPO (FÍSICA 3)
+                 ============================================================= -->
+            <section class="mb-16 pt-8 border-t border-slate-800">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xs font-bold uppercase tracking-widest text-fuchsia-400 bg-fuchsia-950/80 px-2.5 py-0.5 rounded border border-fuchsia-800/60">
+                        PARTE 2
+                    </span>
+                    <span class="text-xs text-slate-500 font-medium">Aplicações e Deduções Rigorosas</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-6">
+                    Objetos & Cálculo do Campo Eletrostático
+                </h2>
+
+                <!-- 2.1 A Carga Esférica -->
+                <article id="sec-2-1" class="mb-14 pt-4 border-b border-slate-800/80 pb-10">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                            <span class="text-fuchsia-400">2.1</span> A Carga Esférica (Simetria Esférica $O(3)$)
+                        </h3>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-blue-950/60 border border-blue-700/50 text-blue-300">
+                            Simetria Completa
+                        </span>
+                    </div>
+
+                    <!-- Subtópico 2.1.1 -->
+                    <div id="sec-2-1-1" class="mb-4">
+                        <h4 class="text-sm font-bold text-sky-300 mb-1.5">2.1.1 Análise das Simetrias</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Uma distribuição de carga esfericamente simétrica $\rho(\vec{r}) = \rho(r)$ permanece inalterada sob qualquer rotação em torno de qualquer eixo arbitrário que passe pelo centro de coordenadas, além de ser invariante sob reflexão em qualquer plano meridiano que contenha o centro.
+                        </p>
+                    </div>
+
+                    <!-- Subtópico 2.1.2 -->
+                    <div id="sec-2-1-2" class="mb-4">
+                        <h4 class="text-sm font-bold text-sky-300 mb-1.5">2.1.2 Determinação da Direção e Dependência de $\vec{E}$</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Considere um plano meridiano que contenha o vetor posição $\vec{r}$. Sob reflexão neste plano, o vetor campo $\vec{E}$ não pode inverter componentes situadas no plano, mas qualquer componente perpendicular a ele deveria mudar de sinal. Como a carga não mudou, essa componente perpendicular deve ser identicamente nula.
+                        </p>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Repetindo esse argumento para todos os planos meridianos que contêm $\vec{r}$, concluímos que tanto a componente polar $E_\theta$ quanto a azimutal $E_\phi$ anulam-se obrigatoriamente:
+                        </p>
+                        <div class="math-display-card text-center text-xs py-2 my-2">
+                            $$E_\theta = 0, \quad E_\phi = 0 \implies \vec{E}(\vec{r}) = E(r)\,\hat{r}$$
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Além disso, como qualquer rotação em torno da origem preserva a distância radial $r$, a magnitude do campo depende exclusivamente do raio escalar $r$, sendo independente dos ângulos $\theta$ e $\phi$.
+                        </p>
+                    </div>
+
+                    <!-- Subtópico 2.1.3 -->
+                    <div id="sec-2-1-3" class="mb-4">
+                        <h4 class="text-sm font-bold text-sky-300 mb-1.5">2.1.3 A Superfície Gaussiana Esférica</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Para aproveitar essa simetria radial, escolhemos como superfície gaussiana uma <b>esfera imaginária concêntrica</b> de raio $r$. Nessa superfície:
+                        </p>
+                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 my-2">
+                            <li>O versor normal exterior à casca é o versor radial esférico: $\hat{n} = \hat{r} \implies d\vec{A} = dA\,\hat{r}$.</li>
+                            <li>O campo elétrico é perfeitamente paralelo ao elemento de área: $\vec{E}\cdot d\vec{A} = (E(r)\,\hat{r})\cdot(dA\,\hat{r}) = E(r)\,dA$.</li>
+                            <li>Como o raio $r$ é fixo em todos os pontos da superfície esférica, a magnitude $E(r)$ é estritamente constante ao longo de toda a área!</li>
+                        </ul>
+                    </div>
+
+                    <!-- Subtópico 2.1.4 -->
+                    <div id="sec-2-1-4" class="mb-6">
+                        <h4 class="text-sm font-bold text-sky-300 mb-1.5">2.1.4 Dedução Passo a Passo da Integral</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Aplicamos a Lei de Gauss na forma integral:
+                        </p>
+                        <div class="math-display-card text-center">
+                            $$\Phi_E = \oint_S \vec{E} \cdot d\vec{A} = \oint_S E(r) \, dA = E(r) \oint_S dA = E(r) \cdot (4\pi r^2) = \frac{Q_{\text{int}}}{\varepsilon_0}$$
+                        </div>
+                        <div class="callout callout-result">
+                            <div class="text-center">
+                                <span class="text-xs uppercase tracking-wider font-bold text-emerald-400 block mb-1">Campo Elétrico da Distribuição Esférica</span>
+                                <div class="text-base font-mono font-bold text-emerald-300 my-1">
+                                    $$\vec{E}(r) = \frac{1}{4\pi\varepsilon_0}\frac{Q_{\text{int}}}{r^2}\,\hat{r}$$
+                                </div>
+                                <span class="text-xs text-emerald-200/80">
+                                    Resultado notável: No exterior da esfera ($r \ge R$), o campo elétrico é idêntico ao de uma carga puntiforme concentrada na origem (Teorema das Cascas de Newton-Gauss).
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Ação Interativa 3D -->
+                    <div class="action-card-3d">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-800/40">Interatividade 3D & Prática</span>
+                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                            </div>
+                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar Carga Esférica</h5>
+                            <p class="text-xs text-slate-400">Visualize a casca gaussiana concêntrica segmentada em painéis $d\vec{A}$ alinhados radialmente com o campo $\vec{E}$.</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <a href="atividades/modulo-esfera.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-blue-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-blue-600/40 transition whitespace-nowrap">
+                                <span>✍</span> Atividades Módulo 2
+                            </a>
+                            <a href="index.html?shape=sphere" class="btn-open-3d">
+                                <span>🌐</span> Explorar no 3D
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 2.2 O Fio Longo / Cilindro Carregado -->
+                <article id="sec-2-2" class="mb-14 pt-4 border-b border-slate-800/80 pb-10">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                            <span class="text-fuchsia-400">2.2</span> O Fio Longo / Cilindro Carregado (Simetria Cilíndrica)
+                        </h3>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-emerald-950/60 border border-emerald-700/50 text-emerald-300">
+                            Simetria Axial
+                        </span>
+                    </div>
+
+                    <!-- Subtópico 2.2.1 -->
+                    <div id="sec-2-2-1" class="mb-4">
+                        <h4 class="text-sm font-bold text-emerald-400 mb-1.5">2.2.1 Análise das Simetrias</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Considere uma linha ou cilindro infinito orientado ao longo do eixo $Z$, com densidade linear uniforme de carga $\lambda$. Este sistema possui:
+                        </p>
+                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 my-2">
+                            <li>Simetria de translação contínua ao longo de $Z$: o sistema é infinito, logo $\partial\vec{E}/\partial z = \vec{0}$.</li>
+                            <li>Simetria de rotação contínua em torno de $Z$: independência do ângulo azimutal $\phi$ e nulidade da componente azimutal ($E_\phi = 0$).</li>
+                            <li>Simetria de reflexão em planos perpendiculares a $Z$: anula a componente longitudinal ($E_z = 0$).</li>
+                        </ul>
+                    </div>
+
+                    <!-- Subtópico 2.2.2 -->
+                    <div id="sec-2-2-2" class="mb-4">
+                        <h4 class="text-sm font-bold text-emerald-400 mb-1.5">2.2.2 Determinação da Direção de $\vec{E}$</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            A combinação dessas três simetrias restringe completamente o vetor campo elétrico: ele aponta estritamente na direção perpendicular ao fio (radial cilíndrica $\hat{r}_{\text{cil}}$) e sua intensidade só depende da distância radial $r$:
+                        </p>
+                        <div class="math-display-card text-center text-xs py-2 my-2">
+                            $$\vec{E}(\vec{r}) = E(r)\,\hat{r}_{\text{cil}} = E(r)(\cos\phi\,\hat{i} + \sin\phi\,\hat{j})$$
+                        </div>
+                    </div>
+
+                    <!-- Subtópico 2.2.3 -->
+                    <div id="sec-2-2-3" class="mb-4">
+                        <h4 class="text-sm font-bold text-emerald-400 mb-1.5">2.2.3 A Gaussiana Cilíndrica e Decomposição de Superfícies</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Adotamos como superfície gaussiana fechada um <b>cilindro coaxial de raio $r$ e comprimento finito arbitrário $L$</b>, tampado nas extremidades por dois discos normais ao eixo $Z$. A integral fechada decompõe-se na soma de 3 superfícies abertas:
+                        </p>
+                        <div class="math-display-card text-center text-xs">
+                            $$\oint_S \vec{E}\cdot d\vec{A} = \int_{\text{tampa 1}} \vec{E}\cdot d\vec{A} + \int_{\text{tampa 2}} \vec{E}\cdot d\vec{A} + \int_{\text{lateral}} \vec{E}\cdot d\vec{A}$$
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed my-2">
+                            <b>Demonstração do Fluxo Nulo nas Tampas:</b> Nas tampas, o elemento de área é paralelo ao eixo longitudinal $Z$ ($d\vec{A} = \pm dA\,\hat{k}$). Como o campo elétrico é puramente radial no plano transversal ($\vec{E} \perp \hat{k}$), o produto escalar anula-se identicamente em cada ponto das tampas:
+                        </p>
+                        <div class="math-display-card text-center text-xs py-1.5">
+                            $$\vec{E} \cdot d\vec{A}_{\text{tampa}} = E(r)\,\hat{r}_{\text{cil}} \cdot (\pm dA\,\hat{k}) = 0 \implies \Phi_{\text{tampa 1}} = \Phi_{\text{tampa 2}} = 0$$
+                        </div>
+                    </div>
+
+                    <!-- Subtópico 2.2.4 -->
+                    <div id="sec-2-2-4" class="mb-6">
+                        <h4 class="text-sm font-bold text-emerald-400 mb-1.5">2.2.4 Dedução Passo a Passo na Lateral</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Na parede lateral curva, o vetor normal aponta para fora ($\hat{n} = \hat{r}_{\text{cil}}$), coincidindo rigorosamente com a direção de $\vec{E}$. Com $r$ constante, $E(r)$ sai da integral:
+                        </p>
+                        <div class="math-display-card text-center">
+                            $$\Phi_E = \int_{\text{lateral}} E(r)\,dA = E(r) \int_{\text{lateral}} dA = E(r) \cdot (2\pi r L) = \frac{Q_{\text{int}}}{\varepsilon_0} = \frac{\lambda L}{\varepsilon_0}$$
+                        </div>
+                        <div class="callout callout-result">
+                            <div class="text-center">
+                                <span class="text-xs uppercase tracking-wider font-bold text-emerald-400 block mb-1">Campo Elétrico do Fio/Cilindro Infinito</span>
+                                <div class="text-base font-mono font-bold text-emerald-300 my-1">
+                                    $$\vec{E}(r) = \frac{\lambda}{2\pi\varepsilon_0 r}\,\hat{r}_{\text{cil}}$$
+                                </div>
+                                <span class="text-xs text-emerald-200/80">
+                                    Observe que o comprimento arbitrário $L$ cancelou-se perfeitamente de ambos os lados. Além disso, o campo decai proporcionalmente a $1/r$, e não $1/r^2$ como na carga pontual!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Ação Interativa 3D -->
+                    <div class="action-card-3d">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/40">Interatividade 3D & Prática</span>
+                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                            </div>
+                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar Fio / Cilindro Longo</h5>
+                            <p class="text-xs text-slate-400">Observe como as setas $d\vec{A}$ nas tampas circulares são perpendiculares a $\vec{E}$ (fluxo zero), enquanto na lateral curva são paralelas.</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <a href="atividades/modulo-cilindro.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-emerald-600/40 transition whitespace-nowrap">
+                                <span>✍</span> Atividades Módulo 3
+                            </a>
+                            <a href="index.html?shape=cylinder" class="btn-open-3d">
+                                <span>⚡</span> Explorar no 3D
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 2.3 A Placa Plana Infinita -->
+                <article id="sec-2-3" class="mb-14 pt-4 border-b border-slate-800/80 pb-10">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                            <span class="text-fuchsia-400">2.3</span> A Placa Plana Infinita (Simetria Planar)
+                        </h3>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-amber-950/60 border border-amber-700/50 text-amber-300">
+                            Simetria Bidimensional
+                        </span>
+                    </div>
+
+                    <!-- Subtópico 2.3.1 -->
+                    <div id="sec-2-3-1" class="mb-4">
+                        <h4 class="text-sm font-bold text-amber-400 mb-1.5">2.3.1 Análise das Simetrias</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Considere uma placa plana infinita contida no plano $XY$ ($z=0$), carregada com densidade superficial uniforme $\sigma$. O sistema exibe:
+                        </p>
+                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 my-2">
+                            <li>Translação contínua em $X$ e $Y$: o campo não pode depender de $x$ nem de $y$ ($\vec{E} = \vec{E}(z)$).</li>
+                            <li>Rotação contínua em torno do eixo normal $Z$: nenhuma direção coplanar a $XY$ pode ser privilegiada $\implies E_x = E_y = 0$.</li>
+                            <li>Reflexão no plano médio da placa ($z=0$): para $z > 0$, o campo aponta para $+z$; para $z < 0$, aponta para $-z$.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Subtópico 2.3.2 -->
+                    <div id="sec-2-3-2" class="mb-4">
+                        <h4 class="text-sm font-bold text-amber-400 mb-1.5">2.3.2 Determinação da Direção de $\vec{E}$</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            O campo elétrico é estritamente perpendicular à placa, apontando para longe dela em ambos os lados (para carga positiva):
+                        </p>
+                        <div class="math-display-card text-center text-xs py-2 my-2">
+                            $$\vec{E}(z) = \text{sgn}(z)\,E(z)\,\hat{k} = \begin{cases} +E(z)\,\hat{k}, & z > 0 \\ -E(z)\,\hat{k}, & z < 0 \end{cases}$$
+                        </div>
+                    </div>
+
+                    <!-- Subtópico 2.3.3 -->
+                    <div id="sec-2-3-3" class="mb-4">
+                        <h4 class="text-sm font-bold text-amber-400 mb-1.5">2.3.3 A Caixa de Pílula (Pillbox)</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Construímos uma superfície gaussiana cilíndrica de seção transversal de área $A$, interceptando a placa perpendicularmente e estendendo-se simetricamente de $-z$ a $+z$.
+                        </p>
+                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 my-2">
+                            <li><b>Parede Lateral:</b> Os vetores de área $d\vec{A}$ são perpendiculares ao eixo $Z$, enquanto $\vec{E}$ aponta em $\hat{k}$. Logo, $\vec{E}\cdot d\vec{A} = 0$ (fluxo lateral é nulo).</li>
+                            <li><b>Tampa Superior ($z > 0$):</b> $\vec{E} = +E\,\hat{k}$ e $d\vec{A} = +dA\,\hat{k} \implies \int \vec{E}\cdot d\vec{A} = E \cdot A$.</li>
+                            <li><b>Tampa Inferior ($z < 0$):</b> $\vec{E} = -E\,\hat{k}$ e $d\vec{A} = -dA\,\hat{k} \implies \int \vec{E}\cdot d\vec{A} = (-E)(-dA) = E \cdot A$.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Subtópico 2.3.4 -->
+                    <div id="sec-2-3-4" class="mb-6">
+                        <h4 class="text-sm font-bold text-amber-400 mb-1.5">2.3.4 Dedução Passo a Passo do Fluxo</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Somando o fluxo através de toda a caixa fechada:
+                        </p>
+                        <div class="math-display-card text-center">
+                            $$\Phi_E = \Phi_{\text{lateral}} + 2\,\Phi_{\text{tampa}} = 0 + 2 E A = \frac{Q_{\text{int}}}{\varepsilon_0} = \frac{\sigma A}{\varepsilon_0}$$
+                        </div>
+                        <div class="callout callout-result">
+                            <div class="text-center">
+                                <span class="text-xs uppercase tracking-wider font-bold text-emerald-400 block mb-1">Campo Elétrico do Plano Infinito</span>
+                                <div class="text-base font-mono font-bold text-emerald-300 my-1">
+                                    $$E = \frac{\sigma}{2\varepsilon_0}$$
+                                </div>
+                                <span class="text-xs text-emerald-200/80">
+                                    <b>Propriedade Fundamental:</b> O campo elétrico é <b>rigorosamente constante e uniforme</b> em todo o semi-espaço. Ele não depende da distância $|z|$ até a placa!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Ação Interativa 3D -->
+                    <div class="action-card-3d">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/40">Interatividade 3D & Prática</span>
+                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                            </div>
+                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar Placa Plana Infinita</h5>
+                            <p class="text-xs text-slate-400">Comprove a bilateralidade das tampas da pillbox e a perfeita invariância do campo por translações no plano.</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <a href="atividades/modulo-plano.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-amber-600/40 transition whitespace-nowrap">
+                                <span>✍</span> Atividades Módulo 4
+                            </a>
+                            <a href="index.html?shape=plane" class="btn-open-3d">
+                                <span>📄</span> Explorar no 3D
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 2.4 O Cubo Carregado -->
+                <article id="sec-2-4" class="mb-14 pt-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                            <span class="text-fuchsia-400">2.4</span> A Distribuição Cúbica (Simetria Discreta — O Contraponto)
+                        </h3>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-red-950/60 border border-red-700/50 text-red-300">
+                            Limite Analítico
+                        </span>
+                    </div>
+
+                    <!-- Subtópico 2.4.1 -->
+                    <div id="sec-2-4-1" class="mb-4">
+                        <h4 class="text-sm font-bold text-red-400 mb-1.5">2.4.1 Grupo de Simetria do Cubo ($O_h$)</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            O cubo possui um número finito de operações de simetria (48 isometrias do grupo octaédrico $O_h$, incluindo rotações de $90^\circ$ e reflexões diagonais). Ele <b>não possui nenhuma simetria contínua</b> sob translação ou rotação por ângulos arbitrários.
+                        </p>
+                    </div>
+
+                    <!-- Subtópico 2.4.2 -->
+                    <div id="sec-2-4-2" class="mb-4">
+                        <h4 class="text-sm font-bold text-red-400 mb-1.5">2.4.2 A Lei de Gauss Continua Rigorosamente Válida</h4>
+                        <div class="callout callout-definition">
+                            <b class="text-sky-300 block mb-1">Atenção a uma das Maiores Dúvidas de Física 3:</b>
+                            A Lei de Gauss <b>NÃO falha</b> no cubo! O fluxo total integrado através das 6 faces de qualquer superfície cúbica fechada que envolva o bloco de carga é matematicamente exato:
+                            <div class="text-center font-bold text-white my-2">
+                                $$\oint_{\text{cubo}} \vec{E} \cdot d\vec{A} = \frac{Q_{\text{total}}}{\varepsilon_0}$$
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subtópico 2.4.3 -->
+                    <div id="sec-2-4-3" class="mb-4">
+                        <h4 class="text-sm font-bold text-red-400 mb-1.5">2.4.3 Por que Não é Possível Calcular Analiticamente $\vec{E}$?</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-3">
+                            Embora a soma total do fluxo seja conhecida, a geometria cúbica quebra ambos os critérios de solubilidade analítica:
+                        </p>
+                        
+                        <div class="space-y-3 mb-4 text-xs text-slate-300">
+                            <div class="p-3 rounded-lg bg-red-950/40 border border-red-800/60">
+                                <b class="text-red-400 text-sm block mb-1">1. Variação Contínua da Magnitude $|\vec{E}(\vec{r})|$</b>
+                                O centro de uma face está a uma distância $L/2$ do centro de carga, ao passo que os quatro cantos dessa mesma face estão a uma distância $\frac{\sqrt{3}}{2}L \approx 0.866 L$. Logo, o campo é mais forte no centro e mais fraco nos vértices. A magnitude varia ponto a ponto ao longo da face!
+                            </div>
+                            <div class="p-3 rounded-lg bg-red-950/40 border border-red-800/60">
+                                <b class="text-red-400 text-sm block mb-1">2. Desvio Angular Contínuo ($\vec{E} \not\parallel d\vec{A}$)</b>
+                                Exceto no centro exato de cada face, as linhas de campo elétrico inclinam-se obliquamente nas vizinhanças das arestas e vértices. Portanto, o ângulo $\theta(\vec{r})$ entre $\vec{E}$ e o vetor normal de área $d\vec{A}$ varia continuamente.
+                            </div>
+                        </div>
+
+                        <p class="text-slate-300 text-sm leading-relaxed mb-2">
+                            Consequentemente, é algebricamente impossível retirar $|\vec{E}|$ para fora da integral de fluxo:
+                        </p>
+                        <div class="math-display-card text-center text-xs py-2">
+                            $$\oint_{\text{cubo}} \vec{E} \cdot d\vec{A} = \oint_{\text{cubo}} |\vec{E}(\vec{r})|\,\cos\theta(\vec{r})\,dA \neq |\vec{E}| \oint_{\text{cubo}} dA$$
+                        </div>
+                    </div>
+
+                    <!-- Subtópico 2.4.4 -->
+                    <div id="sec-2-4-4" class="mb-6">
+                        <h4 class="text-sm font-bold text-red-400 mb-1.5">2.4.4 Lição Fundamental da Física 3</h4>
+                        <div class="callout callout-danger">
+                            <p class="text-xs text-red-100 leading-relaxed">
+                                Temos <b>uma única equação escalar</b> (o fluxo total $Q/\varepsilon_0$) para uma <b>infinidade contínua de valores desconhecidos de $|\vec{E}(\vec{r})|$</b> em cada ponto das 6 faces. Para determinar o campo no cubo, é obrigatório recorrer a métodos numéricos computacionais ou à integração direta da Lei de Coulomb!
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card de Ação Interativa 3D -->
+                    <div class="action-card-3d">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-red-400 bg-red-950/60 px-2 py-0.5 rounded border border-red-800/40">Interatividade 3D & Prática</span>
+                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                            </div>
+                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar o Cubo Carregado</h5>
+                            <p class="text-xs text-slate-400">Ative os vetores de área $d\vec{A}$ e as setas de campo $\vec{E}$ no cubo para constatar visualmente a variação angular e de intensidade nos cantos.</p>
+                        </div>
+                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                            <a href="atividades/modulo-cubo.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-red-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-red-600/40 transition whitespace-nowrap">
+                                <span>✍</span> Atividades Módulo 5
+                            </a>
+                            <a href="index.html?shape=cube" class="btn-open-3d">
+                                <span>📦</span> Explorar no 3D
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Rodapé da Página -->
+            <footer class="mt-16 pt-8 border-t border-slate-800 text-center text-xs text-slate-500 pb-12">
+                <p class="mb-2">Simulador Interativo da Lei de Gauss & Simetrias Eletrostáticas</p>
+                <p>Desenvolvido para o ensino de Física 3 universitária.</p>
+                <div class="mt-4">
+                    <a href="index.html" class="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">
+                        ← Retornar ao Laboratório Interativo 3D
+                    </a>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Script de Controle do Guia (Scrollspy, Barra de Progresso e Navegação) -->
+    <script src="js/guide/guiaPage.js"></script>
+</body>
+</html>
