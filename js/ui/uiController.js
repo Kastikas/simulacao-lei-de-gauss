@@ -44,7 +44,85 @@ GaussApp.UI = GaussApp.UI || {};
         }
     };
 
+    function updateAreaVectorsSubToggle(gaussianActive, areaVectorsActive) {
+        const btn = document.getElementById('toggle-area-vectors');
+        const container = document.getElementById('gaussian-sub-toggles');
+        if (!btn) return;
+
+        if (!gaussianActive) {
+            btn.disabled = true;
+            btn.setAttribute('aria-disabled', 'true');
+            btn.setAttribute('aria-checked', 'false');
+            btn.className = 'toggle-btn w-full flex items-center justify-between p-2 rounded-lg border border-slate-800 bg-slate-900/40 text-left opacity-40 cursor-not-allowed';
+
+            if (container) {
+                container.classList.remove('border-sky-500/30');
+                container.classList.add('border-slate-700/40');
+            }
+
+            const statusEl = btn.querySelector('.toggle-status');
+            const switchEl = btn.querySelector('.toggle-switch');
+            const pinEl = btn.querySelector('.toggle-pin');
+
+            if (statusEl) {
+                statusEl.textContent = 'BLOQUEADO';
+                statusEl.className = 'toggle-status text-[9px] font-bold uppercase tracking-wider text-slate-500';
+            }
+            if (switchEl) {
+                switchEl.className = 'toggle-switch w-7 h-3.5 rounded-full bg-slate-700 relative transition-colors';
+            }
+            if (pinEl) {
+                pinEl.className = 'toggle-pin w-2.5 h-2.5 rounded-full bg-slate-400 absolute top-0.5 left-0.5 transition-all shadow-sm';
+            }
+        } else {
+            btn.disabled = false;
+            btn.removeAttribute('aria-disabled');
+            btn.setAttribute('aria-checked', areaVectorsActive ? 'true' : 'false');
+
+            if (container) {
+                container.classList.remove('border-slate-700/40');
+                container.classList.add('border-sky-500/30');
+            }
+
+            const statusEl = btn.querySelector('.toggle-status');
+            const switchEl = btn.querySelector('.toggle-switch');
+            const pinEl = btn.querySelector('.toggle-pin');
+
+            if (areaVectorsActive) {
+                btn.className = 'toggle-btn w-full flex items-center justify-between p-2 rounded-lg border border-emerald-500/50 bg-emerald-950/30 hover:bg-slate-700/60 text-left';
+                if (statusEl) {
+                    statusEl.textContent = 'ATIVO';
+                    statusEl.className = 'toggle-status text-[9px] font-bold uppercase tracking-wider text-emerald-400';
+                }
+                if (switchEl) {
+                    switchEl.className = 'toggle-switch w-7 h-3.5 rounded-full bg-emerald-500 relative transition-colors';
+                }
+                if (pinEl) {
+                    pinEl.className = 'toggle-pin w-2.5 h-2.5 rounded-full bg-white absolute top-0.5 right-0.5 transition-all shadow-sm';
+                }
+            } else {
+                btn.className = 'toggle-btn w-full flex items-center justify-between p-2 rounded-lg border border-slate-700 bg-slate-800/40 hover:bg-slate-700/60 text-left';
+                if (statusEl) {
+                    statusEl.textContent = 'OCULTO';
+                    statusEl.className = 'toggle-status text-[9px] font-bold uppercase tracking-wider text-slate-400';
+                }
+                if (switchEl) {
+                    switchEl.className = 'toggle-switch w-7 h-3.5 rounded-full bg-slate-600 relative transition-colors';
+                }
+                if (pinEl) {
+                    pinEl.className = 'toggle-pin w-2.5 h-2.5 rounded-full bg-white absolute top-0.5 left-0.5 transition-all shadow-sm';
+                }
+            }
+        }
+    }
+
     function updateToggleUI(id, active, themeKey) {
+        if (id === 'toggle-area-vectors') {
+            const gaussianActive = GaussApp.state ? GaussApp.state.showGaussian : true;
+            updateAreaVectorsSubToggle(gaussianActive, active);
+            return;
+        }
+
         const btn = document.getElementById(id);
         if (!btn) return;
         const theme = toggleThemes[themeKey] || toggleThemes.blue;
@@ -216,6 +294,7 @@ GaussApp.UI = GaussApp.UI || {};
             toggleGaussian.addEventListener('click', () => {
                 state.showGaussian = !state.showGaussian;
                 updateToggleUI('toggle-gaussian', state.showGaussian, 'blue');
+                updateAreaVectorsSubToggle(state.showGaussian, state.showAreaVectors);
                 GaussApp.updateScene();
             });
         }
@@ -223,6 +302,7 @@ GaussApp.UI = GaussApp.UI || {};
         const toggleAreaVectors = document.getElementById('toggle-area-vectors');
         if (toggleAreaVectors) {
             toggleAreaVectors.addEventListener('click', () => {
+                if (!state.showGaussian) return;
                 state.showAreaVectors = !state.showAreaVectors;
                 updateToggleUI('toggle-area-vectors', state.showAreaVectors, 'emerald');
                 GaussApp.updateScene();
@@ -343,6 +423,7 @@ GaussApp.UI = GaussApp.UI || {};
     GaussApp.UI = {
         toggleThemes,
         updateToggleUI,
+        updateAreaVectorsSubToggle,
         updateSymmetryDropdown,
         updateUI,
         initEventListeners,

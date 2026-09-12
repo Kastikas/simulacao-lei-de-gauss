@@ -63,6 +63,14 @@ body {
     transform: scale(0.985);
 }
 
+.toggle-btn:disabled,
+.toggle-btn[aria-disabled="true"] {
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    filter: none !important;
+    transform: none !important;
+}
+
 #canvas-container canvas {
     display: block;
     width: 100% !important;

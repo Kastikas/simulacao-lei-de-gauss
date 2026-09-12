@@ -137,12 +137,30 @@ GaussApp.Gaussian = GaussApp.Gaussian || {};
         const group = new THREE.Group();
         const createArrow = GaussApp.Scene.createArrow;
 
+        // Amostragem angular balanceada para malha 9x16:
+        // Mantém distância física uniforme (~2.6 unidades) e elimina sobreposição nos polos
+        const sampleMap = {
+            1: [0, 4, 8, 12],
+            3: [0, 2, 4, 6, 8, 10, 12, 14],
+            4: [1, 3, 5, 7, 9, 11, 13, 15],
+            5: [0, 2, 4, 6, 8, 10, 12, 14],
+            7: [0, 4, 8, 12]
+        };
+
+        const isStandardGrid = (nPhi === 9 && nTheta === 16);
+
         for (let i = 0; i < nPhi; i++) {
             const phiStart = (i / nPhi) * Math.PI;
             const phiEnd = ((i + 1) / nPhi) * Math.PI;
             const midPhi = (phiStart + phiEnd) / 2;
 
+            const validThetas = isStandardGrid ? (sampleMap[i] || null) : null;
+            if (isStandardGrid && !validThetas) continue;
+
             for (let j = 0; j < nTheta; j++) {
+                if (isStandardGrid && !validThetas.includes(j)) continue;
+                if (!isStandardGrid && (i % 2 !== 0 || j % 2 !== 0)) continue;
+
                 const thetaStart = (j / nTheta) * Math.PI * 2;
                 const thetaEnd = ((j + 1) / nTheta) * Math.PI * 2;
                 const midTheta = (thetaStart + thetaEnd) / 2;

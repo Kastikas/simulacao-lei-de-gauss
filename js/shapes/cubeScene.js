@@ -17,7 +17,7 @@ GaussApp.Shapes = GaussApp.Shapes || {};
             mainGroup.add(createSegmentedCube(4.0, 4, 0.05));
         }
 
-        if (showAreaVectors) {
+        if (showGaussian && showAreaVectors) {
             mainGroup.add(createCubeAreaVectors(4.0, 4, 0.85));
         }
         

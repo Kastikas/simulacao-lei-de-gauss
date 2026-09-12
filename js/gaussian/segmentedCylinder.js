@@ -228,13 +228,20 @@ GaussApp.Gaussian = GaussApp.Gaussian || {};
         const group = new THREE.Group();
         const createArrow = GaussApp.Scene.createArrow;
 
-        // 1. Vetores na parede lateral
+        // 1. Vetores na parede lateral (amostragem espaçada em Z e Theta)
         for (let i = 0; i < nZ; i++) {
+            // Em cilindros com 3 níveis (ex: plano), usamos os níveis externos {0, 2}
+            // Em cilindros com 5 níveis (ex: fio infinito), usamos {0, 2, 4}
+            if (i % 2 !== 0) continue;
+
             const zStart = -height / 2 + (i / nZ) * height;
             const zEnd = -height / 2 + ((i + 1) / nZ) * height;
             const midZ = (zStart + zEnd) / 2;
 
             for (let j = 0; j < nTheta; j++) {
+                // Amostra a cada 2 setores angulares para evitar aglomeração
+                if (j % 2 !== 0) continue;
+
                 const thetaStart = (j / nTheta) * Math.PI * 2;
                 const thetaEnd = ((j + 1) / nTheta) * Math.PI * 2;
                 const midTheta = (thetaStart + thetaEnd) / 2;
@@ -255,21 +262,23 @@ GaussApp.Gaussian = GaussApp.Gaussian || {};
         ];
 
         for (const cap of caps) {
-            for (let rIdx = 0; rIdx < nRings; rIdx++) {
-                const rStart = (rIdx / nRings) * radius;
-                const rEnd = ((rIdx + 1) / nRings) * radius;
-                const midR = (rStart + rEnd) / 2;
+            // Amostra apenas no anel externo para evitar saturação no polo central da tampa
+            const rIdx = nRings - 1;
+            const rStart = (rIdx / nRings) * radius;
+            const rEnd = ((rIdx + 1) / nRings) * radius;
+            const midR = (rStart + rEnd) / 2;
 
-                for (let j = 0; j < nTheta; j++) {
-                    const thetaStart = (j / nTheta) * Math.PI * 2;
-                    const thetaEnd = ((j + 1) / nTheta) * Math.PI * 2;
-                    const midTheta = (thetaStart + thetaEnd) / 2;
+            for (let j = 0; j < nTheta; j++) {
+                if (j % 2 !== 0) continue;
 
-                    const norm = new THREE.Vector3(0, 0, cap.normalZ);
-                    const origin = new THREE.Vector3(midR * Math.cos(midTheta), midR * Math.sin(midTheta), cap.z);
+                const thetaStart = (j / nTheta) * Math.PI * 2;
+                const thetaEnd = ((j + 1) / nTheta) * Math.PI * 2;
+                const midTheta = (thetaStart + thetaEnd) / 2;
 
-                    group.add(createArrow(norm, origin, length, color, 0.24, 0.12));
-                }
+                const norm = new THREE.Vector3(0, 0, cap.normalZ);
+                const origin = new THREE.Vector3(midR * Math.cos(midTheta), midR * Math.sin(midTheta), cap.z);
+
+                group.add(createArrow(norm, origin, length, color, 0.24, 0.12));
             }
         }
 

@@ -52,7 +52,7 @@ GaussApp.Shapes = GaussApp.Shapes || {};
             mainGroup.add(createSegmentedCylinder(gaussRad, gaussHeight, 3, 12, 2, 0.05));
         }
 
-        if (showAreaVectors) {
+        if (showGaussian && showAreaVectors) {
             mainGroup.add(createCylinderAreaVectors(gaussRad, gaussHeight, 3, 12, 2, 0.75));
         }
         

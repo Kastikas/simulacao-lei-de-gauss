@@ -20,7 +20,7 @@ GaussApp.Shapes = GaussApp.Shapes || {};
             mainGroup.add(createSegmentedSphere(radGauss, 9, 16, 0.05));
         }
 
-        if (showAreaVectors) {
+        if (showGaussian && showAreaVectors) {
             mainGroup.add(createSphereAreaVectors(radGauss, 9, 16, 0.85));
         }
         

@@ -117,9 +117,14 @@ GaussApp.Gaussian = GaussApp.Gaussian || {};
             const faceCenter = face.normal.clone().multiplyScalar(half);
 
             for (let i = 0; i < gridN; i++) {
+                // Amostra apenas os painéis internos para evitar colisões nas arestas e vértices
+                if (gridN > 2 && (i === 0 || i === gridN - 1)) continue;
+
                 const uMid = -half + (i + 0.5) * dStep;
 
                 for (let j = 0; j < gridN; j++) {
+                    if (gridN > 2 && (j === 0 || j === gridN - 1)) continue;
+
                     const vMid = -half + (j + 0.5) * dStep;
 
                     const origin = faceCenter.clone().addScaledVector(face.u, uMid).addScaledVector(face.v, vMid);
