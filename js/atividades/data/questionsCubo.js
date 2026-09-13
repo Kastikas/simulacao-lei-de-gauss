@@ -73,7 +73,7 @@ GaussApp.QuizData.cubo = [
     {
         id: "cub-q4",
         category: "critique",
-        categoryLabel: "A Lição de Física 3",
+        categoryLabel: "Lição Teórica Fundamental",
         enunciado: "Qual é a principal lição teórica e pedagógica que o cubo carregado ensina sobre a <b>Lei de Gauss</b>?",
         alternativas: [
             "A Lei de Gauss é uma lei fundamental da física universalmente válida para qualquer superfície fechada imaginária; no entanto, ela só permite calcular analiticamente o campo elétrico quando a simetria for contínua o bastante para colocar $|\\vec{E}|$ em evidência para fora da integral.",

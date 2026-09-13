@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia Teórico: Simetria & Lei de Gauss (Física 3)</title>
+    <title>Guia Teórico: Simetria & Lei de Gauss</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,7 +50,7 @@
 
             <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>Eletromagnetismo & Simetrias (Física 3)</span>
+                <span>Eletromagnetismo & Simetrias</span>
             </div>
         </div>
 
@@ -102,7 +102,7 @@
                             </ul>
                         </li>
                         <li><a href="#sec-1-4" class="toc-link">1.4 Redução dos Graus de Liberdade</a></li>
-                        <li><a href="#sec-1-5" class="toc-link">1.5 A Lei de Gauss & Solubilidade</a></li>
+                        <li><a href="#sec-1-5" class="toc-link"><span>1.5 A Lei de Gauss & Solubilidade</span><span class="toc-activity-tag">✍ Quiz</span></a></li>
                     </ul>
                 </div>
 
@@ -113,7 +113,7 @@
                     </span>
                     <ul class="space-y-0.5">
                         <li>
-                            <a href="#sec-2-1" class="toc-link">2.1 A Carga Esférica ($O(3)$)</a>
+                            <a href="#sec-2-1" class="toc-link"><span>2.1 A Carga Esférica ($O(3)$)</span><span class="toc-activity-tag">✍ Quiz</span></a>
                             <ul class="space-y-0.5 mt-0.5">
                                 <li><a href="#sec-2-1-1" class="toc-sublink">2.1.1 Análise de Simetria</a></li>
                                 <li><a href="#sec-2-1-2" class="toc-sublink">2.1.2 Direção Radial de $\vec{E}$</a></li>
@@ -122,7 +122,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#sec-2-2" class="toc-link">2.2 O Fio / Cilindro Longo</a>
+                            <a href="#sec-2-2" class="toc-link"><span>2.2 O Fio / Cilindro Longo</span><span class="toc-activity-tag">✍ Quiz</span></a>
                             <ul class="space-y-0.5 mt-0.5">
                                 <li><a href="#sec-2-2-1" class="toc-sublink">2.2.1 Análise de Simetria</a></li>
                                 <li><a href="#sec-2-2-2" class="toc-sublink">2.2.2 Direção Radial Cilíndrica</a></li>
@@ -131,7 +131,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#sec-2-3" class="toc-link">2.3 A Placa Plana Infinita</a>
+                            <a href="#sec-2-3" class="toc-link"><span>2.3 A Placa Plana Infinita</span><span class="toc-activity-tag">✍ Quiz</span></a>
                             <ul class="space-y-0.5 mt-0.5">
                                 <li><a href="#sec-2-3-1" class="toc-sublink">2.3.1 Análise de Simetria</a></li>
                                 <li><a href="#sec-2-3-2" class="toc-sublink">2.3.2 Campo Normal Bilateral</a></li>
@@ -140,7 +140,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#sec-2-4" class="toc-link">2.4 O Cubo Carregado (Contraponto)</a>
+                            <a href="#sec-2-4" class="toc-link"><span>2.4 O Cubo Carregado (Contraponto)</span><span class="toc-activity-tag">✍ Quiz</span></a>
                             <ul class="space-y-0.5 mt-0.5">
                                 <li><a href="#sec-2-4-1" class="toc-sublink">2.4.1 Grupo de Simetria $O_h$</a></li>
                                 <li><a href="#sec-2-4-2" class="toc-sublink">2.4.2 Validade da Lei de Gauss</a></li>
@@ -165,7 +165,7 @@
                     Simetria & A Lei de Gauss em Eletromagnetismo
                 </h1>
                 <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-                    Um guia teórico rigoroso em nível de Física 3 universitária. Descubra como princípios geométricos de invariância e o Princípio de Curie reduzem equações diferenciais insolúveis a integrações elementares de fluxo.
+                    Um guia teórico rigoroso de eletromagnetismo universitário. Descubra como princípios geométricos de invariância e o Princípio de Curie reduzem equações diferenciais insolúveis a integrações elementares de fluxo.
                 </p>
             </div>
 
@@ -424,23 +424,32 @@
                         $$\oint_S \vec{E} \cdot d\vec{A} = E \oint_{S_{\text{ativo}}} dA = E \cdot A_{\text{ativo}} = \frac{Q_{\text{int}}}{\varepsilon_0} \implies E = \frac{Q_{\text{int}}}{\varepsilon_0 A_{\text{ativo}}}$$
                     </div>
 
-                    <!-- Card de Transição para Atividades de Fixação do Módulo 1 -->
-                    <div class="mt-8 p-4 rounded-xl bg-gradient-to-r from-sky-950/40 via-purple-950/30 to-slate-900 border border-sky-500/40 flex items-center justify-between gap-4 flex-wrap">
-                        <div>
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-sky-400 block mb-0.5">Atividades Práticas</span>
-                            <h4 class="text-sm font-bold text-white">Praticar Desafios do Módulo 1: Simetrias & Curie</h4>
-                            <p class="text-xs text-slate-400">Predição de vetores simétricos $\vec{r} \to \vec{r}'$, teste de paridade e redução de variáveis no 3D.</p>
+                    <!-- Card de Atividade de Fixação: Módulo 1 -->
+                    <div class="topic-activity-card">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-purple-300 bg-purple-950/70 px-2.5 py-0.5 rounded border border-purple-700/50">✍ Atividade de Fixação • Módulo 1</span>
+                                    <span class="text-xs text-slate-400">Verificação Ativa</span>
+                                </div>
+                                <h4 class="text-base font-bold text-white mb-1">Testar Conhecimento: Simetrias & Princípio de Curie</h4>
+                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">
+                                    Pratique a transformação de vetores $\vec{r} \to \vec{r}'$, análise de paridade e identifique como simetrias contínuas reduzem graus de liberdade.
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2.5 shrink-0">
+                                <a href="atividades/modulo-simetrias.html" class="btn-activity-primary">
+                                    <span>✍ Resolver Atividades</span>
+                                    <span>→</span>
+                                </a>
+                            </div>
                         </div>
-                        <a href="atividades/modulo-simetrias.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition shadow-lg shadow-sky-600/30">
-                            <span>✍ Resolver Atividades</span>
-                            <span>→</span>
-                        </a>
                     </div>
                 </article>
             </section>
 
             <!-- =============================================================
-                 PARTE 2: OBJETOS & CÁLCULO DO CAMPO (FÍSICA 3)
+                 PARTE 2: OBJETOS & CÁLCULO DO CAMPO
                  ============================================================= -->
             <section class="mb-16 pt-8 border-t border-slate-800">
                 <div class="flex items-center gap-2 mb-2">
@@ -524,23 +533,28 @@
                         </div>
                     </div>
 
-                    <!-- Card de Ação Interativa 3D -->
-                    <div class="action-card-3d">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-xs font-bold uppercase tracking-wider text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-800/40">Interatividade 3D & Prática</span>
-                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                    <!-- Card de Atividade de Fixação: Módulo 2 -->
+                    <div class="topic-activity-card">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-purple-300 bg-purple-950/70 px-2.5 py-0.5 rounded border border-purple-700/50">✍ Atividade de Fixação • Módulo 2</span>
+                                    <span class="text-xs text-slate-400">Verificação Ativa</span>
+                                </div>
+                                <h4 class="text-base font-bold text-white mb-1">Testar Conhecimento: A Carga Esférica</h4>
+                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">
+                                    Valide o Teorema das Cascas, teste a concentricidade da gaussiana esférica e comprove a independência angular do campo elétrico.
+                                </p>
                             </div>
-                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar Carga Esférica</h5>
-                            <p class="text-xs text-slate-400">Visualize a casca gaussiana concêntrica segmentada em painéis $d\vec{A}$ alinhados radialmente com o campo $\vec{E}$.</p>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                            <a href="atividades/modulo-esfera.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-blue-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-blue-600/40 transition whitespace-nowrap">
-                                <span>✍</span> Atividades Módulo 2
-                            </a>
-                            <a href="index.html?shape=sphere" class="btn-open-3d">
-                                <span>🌐</span> Explorar no 3D
-                            </a>
+                            <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
+                                <a href="index.html?shape=sphere" class="btn-activity-secondary" title="Explorar Carga Esférica no Laboratório 3D">
+                                    <span>🌐</span> <span>Simulador 3D</span>
+                                </a>
+                                <a href="atividades/modulo-esfera.html" class="btn-activity-primary">
+                                    <span>✍ Iniciar Atividades</span>
+                                    <span>→</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -619,23 +633,28 @@
                         </div>
                     </div>
 
-                    <!-- Card de Ação Interativa 3D -->
-                    <div class="action-card-3d">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/40">Interatividade 3D & Prática</span>
-                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                    <!-- Card de Atividade de Fixação: Módulo 3 -->
+                    <div class="topic-activity-card">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-purple-300 bg-purple-950/70 px-2.5 py-0.5 rounded border border-purple-700/50">✍ Atividade de Fixação • Módulo 3</span>
+                                    <span class="text-xs text-slate-400">Verificação Ativa</span>
+                                </div>
+                                <h4 class="text-base font-bold text-white mb-1">Testar Conhecimento: O Fio & Cilindro Longo</h4>
+                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">
+                                    Analise o cancelamento do comprimento arbitrário $L$, o papel das tampas normais ao campo e o decaimento $1/r$.
+                                </p>
                             </div>
-                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar Fio / Cilindro Longo</h5>
-                            <p class="text-xs text-slate-400">Observe como as setas $d\vec{A}$ nas tampas circulares são perpendiculares a $\vec{E}$ (fluxo zero), enquanto na lateral curva são paralelas.</p>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                            <a href="atividades/modulo-cilindro.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-emerald-600/40 transition whitespace-nowrap">
-                                <span>✍</span> Atividades Módulo 3
-                            </a>
-                            <a href="index.html?shape=cylinder" class="btn-open-3d">
-                                <span>⚡</span> Explorar no 3D
-                            </a>
+                            <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
+                                <a href="index.html?shape=cylinder" class="btn-activity-secondary" title="Explorar Cilindro no Laboratório 3D">
+                                    <span>⚡</span> <span>Simulador 3D</span>
+                                </a>
+                                <a href="atividades/modulo-cilindro.html" class="btn-activity-primary">
+                                    <span>✍ Iniciar Atividades</span>
+                                    <span>→</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -710,23 +729,28 @@
                         </div>
                     </div>
 
-                    <!-- Card de Ação Interativa 3D -->
-                    <div class="action-card-3d">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/40">Interatividade 3D & Prática</span>
-                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                    <!-- Card de Atividade de Fixação: Módulo 4 -->
+                    <div class="topic-activity-card">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-purple-300 bg-purple-950/70 px-2.5 py-0.5 rounded border border-purple-700/50">✍ Atividade de Fixação • Módulo 4</span>
+                                    <span class="text-xs text-slate-400">Verificação Ativa</span>
+                                </div>
+                                <h4 class="text-base font-bold text-white mb-1">Testar Conhecimento: O Plano Infinito</h4>
+                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">
+                                    Investigue a caixa de pílula (pillbox), a contribuição bilateral das duas tampas e a independência de distância $|z|$.
+                                </p>
                             </div>
-                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar Placa Plana Infinita</h5>
-                            <p class="text-xs text-slate-400">Comprove a bilateralidade das tampas da pillbox e a perfeita invariância do campo por translações no plano.</p>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                            <a href="atividades/modulo-plano.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-amber-600/40 transition whitespace-nowrap">
-                                <span>✍</span> Atividades Módulo 4
-                            </a>
-                            <a href="index.html?shape=plane" class="btn-open-3d">
-                                <span>📄</span> Explorar no 3D
-                            </a>
+                            <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
+                                <a href="index.html?shape=plane" class="btn-activity-secondary" title="Explorar Plano no Laboratório 3D">
+                                    <span>📄</span> <span>Simulador 3D</span>
+                                </a>
+                                <a href="atividades/modulo-plano.html" class="btn-activity-primary">
+                                    <span>✍ Iniciar Atividades</span>
+                                    <span>→</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -754,7 +778,7 @@
                     <div id="sec-2-4-2" class="mb-4">
                         <h4 class="text-sm font-bold text-red-400 mb-1.5">2.4.2 A Lei de Gauss Continua Rigorosamente Válida</h4>
                         <div class="callout callout-definition">
-                            <b class="text-sky-300 block mb-1">Atenção a uma das Maiores Dúvidas de Física 3:</b>
+                            <b class="text-sky-300 block mb-1">Atenção a uma das Maiores Dúvidas de Eletromagnetismo:</b>
                             A Lei de Gauss <b>NÃO falha</b> no cubo! O fluxo total integrado através das 6 faces de qualquer superfície cúbica fechada que envolva o bloco de carga é matematicamente exato:
                             <div class="text-center font-bold text-white my-2">
                                 $$\oint_{\text{cubo}} \vec{E} \cdot d\vec{A} = \frac{Q_{\text{total}}}{\varepsilon_0}$$
@@ -790,7 +814,7 @@
 
                     <!-- Subtópico 2.4.4 -->
                     <div id="sec-2-4-4" class="mb-6">
-                        <h4 class="text-sm font-bold text-red-400 mb-1.5">2.4.4 Lição Fundamental da Física 3</h4>
+                        <h4 class="text-sm font-bold text-red-400 mb-1.5">2.4.4 Lição Fundamental do Eletromagnetismo</h4>
                         <div class="callout callout-danger">
                             <p class="text-xs text-red-100 leading-relaxed">
                                 Temos <b>uma única equação escalar</b> (o fluxo total $Q/\varepsilon_0$) para uma <b>infinidade contínua de valores desconhecidos de $|\vec{E}(\vec{r})|$</b> em cada ponto das 6 faces. Para determinar o campo no cubo, é obrigatório recorrer a métodos numéricos computacionais ou à integração direta da Lei de Coulomb!
@@ -798,23 +822,28 @@
                         </div>
                     </div>
 
-                    <!-- Card de Ação Interativa 3D -->
-                    <div class="action-card-3d">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-xs font-bold uppercase tracking-wider text-red-400 bg-red-950/60 px-2 py-0.5 rounded border border-red-800/40">Interatividade 3D & Prática</span>
-                                <span class="text-xs text-slate-400">Laboratório em Tempo Real</span>
+                    <!-- Card de Atividade de Fixação: Módulo 5 -->
+                    <div class="topic-activity-card">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-[11px] font-bold uppercase tracking-wider text-purple-300 bg-purple-950/70 px-2.5 py-0.5 rounded border border-purple-700/50">✍ Atividade de Fixação • Módulo 5</span>
+                                    <span class="text-xs text-slate-400">Verificação Ativa</span>
+                                </div>
+                                <h4 class="text-base font-bold text-white mb-1">Testar Conhecimento: O Cubo Carregado</h4>
+                                <p class="text-xs text-slate-300 max-w-xl leading-relaxed">
+                                    Entenda os limites da Lei de Gauss: por que a lei é sempre verdadeira mas nem sempre nos dá uma fórmula fechada para $|\vec{E}|$.
+                                </p>
                             </div>
-                            <h5 class="text-sm font-bold text-white mb-0.5">Explorar o Cubo Carregado</h5>
-                            <p class="text-xs text-slate-400">Ative os vetores de área $d\vec{A}$ e as setas de campo $\vec{E}$ no cubo para constatar visualmente a variação angular e de intensidade nos cantos.</p>
-                        </div>
-                        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                            <a href="atividades/modulo-cubo.html" class="inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-red-300 font-semibold text-xs px-3.5 py-2.5 rounded-lg border border-red-600/40 transition whitespace-nowrap">
-                                <span>✍</span> Atividades Módulo 5
-                            </a>
-                            <a href="index.html?shape=cube" class="btn-open-3d">
-                                <span>📦</span> Explorar no 3D
-                            </a>
+                            <div class="flex items-center gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
+                                <a href="index.html?shape=cube" class="btn-activity-secondary" title="Explorar Cubo no Laboratório 3D">
+                                    <span>📦</span> <span>Simulador 3D</span>
+                                </a>
+                                <a href="atividades/modulo-cubo.html" class="btn-activity-primary">
+                                    <span>✍ Iniciar Atividades</span>
+                                    <span>→</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -823,7 +852,7 @@
             <!-- Rodapé da Página -->
             <footer class="mt-16 pt-8 border-t border-slate-800 text-center text-xs text-slate-500 pb-12">
                 <p class="mb-2">Simulador Interativo da Lei de Gauss & Simetrias Eletrostáticas</p>
-                <p>Desenvolvido para o ensino de Física 3 universitária.</p>
+                <p>Desenvolvido para o ensino universitário de eletromagnetismo.</p>
                 <div class="mt-4">
                     <a href="index.html" class="text-sky-400 hover:text-sky-300 transition underline underline-offset-4">
                         ← Retornar ao Laboratório Interativo 3D

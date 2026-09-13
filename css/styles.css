@@ -154,35 +154,3 @@ body {
     }
 }
 
-/* Botão Flutuante de Abertura do Guia Teórico no Canto Superior Direito */
-#floating-guide-btn {
-    position: fixed;
-    top: 1rem;
-    right: 1.25rem;
-    z-index: 15;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 1rem;
-    border-radius: 9999px;
-    background: rgba(30, 41, 59, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(217, 70, 239, 0.45);
-    color: #f5d0fe;
-    font-size: 0.75rem;
-    font-weight: 700;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-#floating-guide-btn:hover {
-    background: rgba(51, 65, 85, 0.95);
-    border-color: #d946ef;
-    color: #ffffff;
-    box-shadow: 0 0 15px rgba(217, 70, 239, 0.4);
-    transform: translateY(-1px);
-}
-
